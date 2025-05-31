@@ -86,7 +86,7 @@
     <main class="flex-all-center h-100">
         <form action="{{ route('attemptLogin') }}" class="form form--login" method="post">
             @csrf
-            <legend class="form__title text-center text-color-blue">
+            <legend class="form__title text-center text-color-black">
                 <h1>
                      
                       <strong>

@@ -9,22 +9,33 @@ use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('login');
     }
 
-    public function store(LoginRequest $request){
+    /*
+    public function username()
+    {
+        return 'user'; // <-- ¡Cambia 'username' por el nombre de tu columna!
+        // Por ejemplo, si tu columna se llama 'user_id', pon 'user_id'.
+        // Si se llama 'nombre_de_usuario', pon 'nombre_de_usuario'.
+    }*/
+
+    public function store(LoginRequest $request)
+    {
         $credentials = $request->only('user', 'password');
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             return redirect()->intended('/panel-control');
-            
+
         } else {
-             return back()->withErrors(['message_incorrect_credentials'
-                                                    => 
-                                                  'Credenciales incorrectos'
-                                                 ]);
+            return back()->withErrors([
+                'message_incorrect_credentials'
+                =>
+                    'Credenciales incorrectos'
+            ]);
         }
     }
 

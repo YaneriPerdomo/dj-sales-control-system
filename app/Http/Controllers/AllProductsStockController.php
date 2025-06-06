@@ -13,12 +13,13 @@ class AllProductsStockController extends Controller
         $products = Product::select(
             'name',
             'location_id',
+            "sale_profit_percentage",
             "code",
             "price_dollar",
             "slug",
             "stock_available"
         )->
-           
+
             with([
                 "location" => function ($query) {
                     $query->select('location_id', 'name');
@@ -34,4 +35,17 @@ class AllProductsStockController extends Controller
             ['products' => $products, 'bs' => $bs]
         );
     }
+
+    public function edit($slug)
+    {
+        $product = Product::select('stock_available', 'slug')
+            ->where('slug', $slug)->first();
+
+        return view(
+            "admin.operations.inventory-management.all-products-stock-controller.edit",
+            ['product' => $product,]
+        );
+    }
+
+
 }

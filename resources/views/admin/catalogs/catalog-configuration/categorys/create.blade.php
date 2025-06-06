@@ -48,7 +48,7 @@
                     <span class="form__icon input-group-text @error ('name') is-invalid--border @enderror"
                         id="basic-addon1"><i class="bi bi-tag"></i></span>
                     <input type="text" name="name" class="form-control @error ('name') is-invalid @enderror"
-                        placeholder="Yaneri Perdomo" aria-label="Username" aria-describedby="basic-addon1" autofocus
+                        placeholder="Ej: Suspensión" aria-label="Username" aria-describedby="basic-addon1" autofocus
                         value="">
                 </div>
                 @error('name')

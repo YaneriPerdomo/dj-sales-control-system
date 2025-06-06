@@ -55,15 +55,20 @@
                     <table class='dataTable'>
                         <thead>
                             <tr>
+                                <td>Proveedor</td>
                                 <th>Código de Producto (SKU)</th>
                                 <th>Nombre del producto</th>
                                 <th>Categoria</th>
                                 <th>Marca</th>
-                                <th> Precio en Dólares ($) </th>
-                                <th> Descuento por Pago en Divisas ($) </th>
+                                <th>Precio de Costo ($) </th>
                                 <th> Margen de Ganancia (%) </th>
-                                
+                                <td>Precio de Venta</td>
+                                <th> Descuento por Pago en Divisas ($) </th>
+
                                 <th>Descripcion</th>
+                                <td>
+                                    Registrado desde
+                                </td>
                                 <th>Operaciones</th>
                             </tr>
                         </thead>
@@ -73,34 +78,59 @@
                             @else
                                 @foreach ($products->items() as $value)
                                     <tr class='show'>
+                                        <td>{{ $value->supplier->name}}</td>
                                         <td>{{ $value->code }}</td>
                                         <td>{{ $value->name }}</td>
                                         <td>{{ $value->category->name }}</td>
                                         <td>{{ $value->brand->name }}</td>
-                                        <td>{{ $value->price_dollar }}$</td>
+                                        <td>{{ number_format($value->price_dollar, 2, ',', '.') }}$</td>
+                                        <td>{{$value->sale_profit_percentage}}%</td>
+                                        <td>
+                                            @php
+                                                $value->price_dollar;
+                                                $value->sale_profit_percentage;
+
+                                                $decimal = number_format($value->sale_profit_percentage / 100, 2);
+                                              
+
+                                                $ganancia = $value->price_dollar * $decimal;
+                                               
+
+                                                
+                                                $formula =  $value->price_dollar + $ganancia;
+                                                
+                                                 $respuesta = number_format($formula, 2, ',', '.');
+                                               
+
+                                                 echo  'USD: ' . $respuesta .
+                                                    ' <br> BS: ' . number_format(number_format($formula, 2) * $bs->in_bs, 2, ',', '.');
+                                            @endphp
+                                        </td>
                                         <td>
                                             {{ $value->discount_only_dollar }}$
                                         </td>
-                                        <td>{{$value->sale_profit_percentage}}%</td>
                                         <td>
                                             {{ $value->description }}
                                         </td>
+                                        <td>
+                                            {{ substr($value->created_at, 0, 10) }}
                                         </td>
+
                                         <td class='table__operations'>
 
                                             <a href="{{ route('product.delete', $value->slug)}}">
                                                 <button type="button" class="button button--color-red ">
                                                     <i class='bi bi-trash''></i>
-                                                                                                    </button>
-                                                                                                </a>
+                                                                                                                            </button>
+                                                                                                                        </a>
 
-                                                                                                <a href="{{ route('product.edit', $value->slug)}}">
-                                                                                                    <button class="button button--color-orange">
-                                                                                                       <i class="bi bi-pencil-square"></i>
-                                                </button>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                                                                                                        <a href="{{ route('product.edit', $value->slug)}}">
+                                                                                                                            <button class="button button--color-orange">
+                                                                                                                               <i class="bi bi-pencil-square"></i>
+                                                                        </button>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
                                 @endforeach
                             @endif
                         </tbody>

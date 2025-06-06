@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es" class="height-full">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Configuration | Biblioteca B</title>
+    <link rel="stylesheet" href="../../../css/utilities.css">
+    <link rel="stylesheet" href="../../../css/layouts/_base.css">
+    <link rel="stylesheet" href="../../../css/components/_button.css">
+    <link rel="stylesheet" href="../../../css/components/_footer.css">
+    <link rel="stylesheet" href="../../../css/components/_form.css">
+    <link rel="stylesheet" href="../../../css/components/_header.css">
+    <link rel="stylesheet" href="../../../css/components/_input.css">
+    <link rel="stylesheet" href="../../../css/components/_top-bar.css">
+    <link rel="stylesheet" href="../../../css/components/_selection-operations.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+</head>
+
+<body class="h-100 d-flex flex-column">
+    <x-header-admin></x-header-admin>
+    <x-selection-operations></x-selection-operations>
+    <main class="flex__grow-2 flex-full__aligh-start">
+        <form action="{{ route('all-product-stock.update', $product->slug) }}" method="post" class="form  w-adjustable-s">
+            @csrf
+
+            @method('PUT')
+            <div class="button--back">
+                <a href="{{ route('all-products-stock.index') }}">
+                    <i class="bi bi-arrow-left-square text-grey"></i>
+                    <button class="button text-grey" type="button">Volver al listado</button>
+                </a>
+            </div>
+            <legend class="form__title">
+                <b>Editar stock actual del producto</b>
+            </legend>
+            <small class="text-red">
+                <b>Aviso importante: </b>No se recomienda ajustar el inventario manualmente, ya que esto puede corromper datos críticos en el sistema. Para mantener la integridad de la información, todas las actualizaciones de stock deben realizarse a través del proceso designado.
+            </small>
+            @if (session('alert-success'))
+                <div class="alert alert-success">
+                    {{ session('alert-success') }}
+                </div>
+            @endif
+            <div class="form__item">
+                <label for="" class="form__label form__label--required">Stock</label>
+                <div class="input-group ">
+                    <span class="form__icon input-group-text @error ('name') is-invalid--border @enderror"
+                        id="basic-addon1"><i class="bi bi-journal-text"></i> <i class="bi bi-box"></i></span>
+                    <input type="text" name="name" class="form-control @error ('name') is-invalid @enderror"
+                        placeholder="Ej: 32" aria-label="Username" aria-describedby="basic-addon1" autofocus
+                        value="{{ $product->stock_available }}">
+                </div>
+                @error('name')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="form__button w-100 my-3">
+                <button class="button button--color-blue w-100" type="submit">
+                    Guardar cambios
+                </button>
+            </div>
+        </form>
+    </main>
+
+
+    <x-footer></x-footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

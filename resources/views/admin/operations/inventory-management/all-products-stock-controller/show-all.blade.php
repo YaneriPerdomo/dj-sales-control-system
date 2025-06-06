@@ -50,7 +50,7 @@
                             <tr>
                                 <th>Código de Producto (SKU)</th>
                                 <th>Nombre del producto</th>
-                                <th> Precio en Dólares ($) </th>
+                                <th> Precio en Venta </th>
                                 <th> Ubicación del producto </th>
                                 <th> Stock actual </th>
 
@@ -65,7 +65,22 @@
                                     <tr class='show'>
                                         <td>{{ $value->code }}</td>
                                         <td>{{ $value->name }}</td>
-                                        <td>${{ $value->price_dollar }}</td>
+                                        <td>
+                                            @php
+                                                $value->price_dollar;
+                                                $value->sale_profit_percentage;
+                                                $decimal = number_format($value->sale_profit_percentage / 100, 2);
+
+                                                $ganancia = $value->price_dollar * $decimal;
+
+                                                $formula = $value->price_dollar + $ganancia;
+
+                                                $respuesta = number_format($formula, 2, ',', '.');
+
+                                                echo 'USD: ' . $respuesta .
+                                                    ' <br> BS: ' . number_format(number_format($formula, 2) * $bs->in_bs, 2, ',', '.');
+                                            @endphp
+                                        </td>
                                         <td>{{ $value->location->name }}</td>
                                         <td>
                                             {{ $value->stock_available }}

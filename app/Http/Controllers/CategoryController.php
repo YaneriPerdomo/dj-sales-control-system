@@ -83,7 +83,7 @@ class CategoryController extends Controller
 
             DB::commit();
             return redirect('categoria/' . $new_slug . '/editar')
-                ->with("alert-success", "La marca se ha actualizado correctamente.");
+                ->with("alert-success", "El registro de la categoría se ha actualizado correctamente.");
         } catch (QueryException $ex) { //Error de consulta de nuestra base de datos
             abort(500, 'Sucedio un error de actualizacion de usuario');
             echo $ex->getMessage() . ' ' . $ex->getLine();

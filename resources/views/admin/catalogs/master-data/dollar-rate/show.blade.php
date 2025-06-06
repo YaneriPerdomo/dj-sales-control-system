@@ -81,6 +81,8 @@
                 Fecha y hora de última actualización:
             </i><br>
             <span>
+                @php
+                @endphp
                 {{ $dollar_rate->updated_at ?? 'Aún no se ha actualizado' }}
             </span>
         </section>

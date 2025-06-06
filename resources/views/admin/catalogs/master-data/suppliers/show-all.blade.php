@@ -59,13 +59,13 @@
                                 <th>RIF</th>
                                 <th>Número de Teléfono </th>
                                 <th>Dirección</th>
-
+                                <th>Registrado desde</th>
                                 <th>Operaciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($suppliers->items() == [])
-                                <p>No hay proveedores registrados por los momentos.</p>
+                                <p>No hay clientes registrados por los momentos.</p>
                             @else
                                 @foreach ($suppliers->items() as $value)
                                     <tr class='show'>
@@ -73,6 +73,7 @@
                                         <td>{{ $value->rif }}</td>
                                         <td>{{ $value->telephone_number }}</td>
                                         <td>{{ $value->address }}</td>
+                                        <td>{{substr($value->created_at, 0, 10)}}</td>
                                         </td>
                                         <td class='table__operations'>
                                             @php

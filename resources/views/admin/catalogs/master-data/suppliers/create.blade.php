@@ -85,7 +85,7 @@
             <span class="form__icon input-group-text @error ('telephone_number') is-invalid--border @enderror" id="basic-addon1">
                 <i class="bi bi-telephone"></i> </span>
             <input type="text" name="telephone_number" id="telephone_number" class="form-control @error ('telephone_number') is-invalid @enderror"
-                placeholder="Ej: 0414-1234567" aria-label="Número de Teléfono" aria-describedby="basic-addon1" autofocus value="">
+                placeholder="Ej: 58+ 412-1234567" aria-label="Número de Teléfono" aria-describedby="basic-addon1" autofocus value="">
         </div>
         @error('telephone_number')
             <div class="alert alert-danger">{{ $message }}</div>

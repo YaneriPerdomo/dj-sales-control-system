@@ -20,4 +20,9 @@ class Gender extends Model
     {
         return $this->hasMany(Supplier::class, "gender_id");
     }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class, "gender_id");
+    }
 }

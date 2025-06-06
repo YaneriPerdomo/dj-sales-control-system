@@ -48,7 +48,7 @@
                     <span class="form__icon input-group-text @error ('name') is-invalid--border @enderror"
                         id="basic-addon1"><i class="bi bi-building"></i></span>
                     <input type="text" name="name" class="form-control @error ('name') is-invalid @enderror"
-                        placeholder="Ej: Toyota" aria-label="Username" aria-describedby="basic-addon1" autofocus
+                        placeholder="Ej: Hyundai" aria-label="Username" aria-describedby="basic-addon1" autofocus
                         value="{{ $brand->name }}">
                 </div>
                 @error('name')

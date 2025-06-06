@@ -7,10 +7,15 @@ use App\Http\Controllers\ConfigurationAdminController;
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ControlPanelController;
 use App\Http\Controllers\CriticalStockController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DollarRateController;
+use App\Http\Controllers\GoodController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MerchandiseController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseHistoryController;
+use App\Http\Controllers\StockReportController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
@@ -90,10 +95,47 @@ Route::controller(ProductController::class)->group(function () {
 
 Route::controller(AllProductsStockController::class)->group(function () {
     Route::get('todos-los-productos-y-stock', 'index')->name('all-products-stock.index');
-    Route::get('todos-los-productos-y-stock/{slug}/editar', 'edit')->name('all-product-stock.edit');
-    Route::put('todos-los-productos-y-stock/{slug}/editar', 'update')->name('all-product-stock.update');
+    Route::get('todos-los-productos-y-stock/{slug}/editar-stock', 'edit')->name('all-product-stock.edit');
+    Route::put('todos-los-productos-y-stock/{slug}/editar-stock', 'update')->name('all-product-stock.update');
 });
 
 Route::controller(CriticalStockController::class)->group(function () {
     Route::get('productos-con-stock-criticos', 'index')->name('critical-stock.index');
 });
+Route::controller(CriticalStockController::class)->group(function () {
+    Route::get('productos-con-stock-criticos', 'index')->name('critical-stock.index');
+});
+
+Route::controller(StockReportController::class)->group(function () {
+    Route::get('informe-stock', 'index')->name('stock-reporte.index');
+    Route::post('informe-stock', 'reportPDF')->name('stock-report.reportPDF');
+});
+
+Route::controller(CustomerController::class)->group(function () {
+    Route::get('clientes', 'index')->name('customer.index');
+    Route::get('cliente/{slug}/editar', 'edit')->name('customer.edit');
+    Route::put('cliente/{slug}/editar', 'update')->name('customer.update');
+});
+
+Route::controller(GoodController::class)->group(function () {
+    Route::get('mercancia', 'index')->name('good.index');
+    Route::get('mercancia/registrar', 'create')->name('good.create');
+    Route::post('mercancia/registrar', 'store')->name('good.store');
+});
+
+Route::controller(GoodController::class)->group(function () {
+    Route::get('compras', 'index')->name('good.index');
+    Route::get('compra/registrar', 'create')->name('good.create');
+    Route::post('compra/registrar', 'store')->name('good.store');
+});
+Route::controller(MerchandiseController::class)->group(function () {
+    Route::get('mercancia/devolver', 'create')->name('return-merchandise.create');
+    Route::post('mercancia/devolver', 'store')->name('return-merchandise.store');
+});
+
+Route::controller(PurchaseHistoryController::class)->group(function () {
+    Route::get('historial-mercancias', 'index')->name('spurchase-history.index');
+    Route::get('historial-mercancia/m-{id}/{statu}/mas-detalles', 'show')->name('spurchase-history.show');
+});
+
+

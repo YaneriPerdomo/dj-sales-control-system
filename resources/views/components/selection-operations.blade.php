@@ -13,10 +13,12 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark">
                     <li>
-                        <h6 class="dropdown-header">Gestión de Compras</h6>
+                        <h6 class="dropdown-header">Gestión de Mercancias</h6>
                     </li>
-                    <li><a class="dropdown-item" href="">Registrar Compra</a></li>
-                    <li><a class="dropdown-item" href="">Historial de Compras</a></li>
+                    <li><a class="dropdown-item" href="{{ route('good.create') }}">Registrar Mercancia</a></li>
+                    <li><a class="dropdown-item" href="{{ route('return-merchandise.create') }}">Devolución de
+                            Mercancía</a></li>
+              
                     <li>
                         <hr class="dropdown-divider">
                     </li>
@@ -37,10 +39,7 @@
                     <li><a class="dropdown-item" href="{{ route('all-products-stock.index') }}">
                             <i class="fas fa-boxes"></i> Todos los Productos y Stock
                         </a></li>
-                    <li><a class="dropdown-item" href="{{ route('critical-stock.index') }}">
-                            <i class="fas fa-exclamation-triangle"></i> Alertas de Stock Crítico
-                        </a></li>
-                    <li><a class="dropdown-item" href="">
+                    <li><a class="dropdown-item" href="{{ route('spurchase-history.index') }}">
                             <i class="fas fa-exchange-alt"></i> Historial de Movimientos
                         </a></li>
                 </ul>
@@ -58,8 +57,9 @@
                     </li>
                     <li><a class="dropdown-item" href="{{ route('product.index') }}">Productos</a></li>
                     <li><a class="dropdown-item" href="{{ route('supplier.index') }}">Proveedores</a></li>
-                    <li><a class="dropdown-item" href="{">Clientes</a></li>
-                    <li><a class="dropdown-item" href="{{ route('dollar-rate.index') }}">Tasa de Cambio (USD/BS)</a></li>
+                    <li><a class="dropdown-item" href="{{ route('customer.index') }}">Clientes</a></li>
+                    <li><a class="dropdown-item" href="{{ route('dollar-rate.index') }}">Tasa de Cambio (USD/BS)</a>
+                    </li>
                     <li><a class="dropdown-item" href="">Configuración IVA</a></li>
                     <li>
                         <hr class="dropdown-divider">
@@ -81,8 +81,8 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark">
                     <li><a class="dropdown-item" href="">Informe de Ventas</a></li>
-                    <li><a class="dropdown-item" href="">Informe de Compras</a></li>
-                    <li><a class="dropdown-item" href="">Informe de Stock</a></li>
+                    <li><a class="dropdown-item" href="">Informe de Mercancias</a></li>
+                    <li><a class="dropdown-item" href="{{ route('stock-reporte.index') }}">Informe de Stock</a></li>
                 </ul>
             </div>
         </div>

@@ -47,7 +47,24 @@
                 <legend>
                     Detalles del Producto
                 </legend>
-
+                  <div class="form__item">
+                    <label for="supplier_id" class="form__label form__label--required">Proveedor</label>
+                    <div class="input-group">
+                        <span class="form__icon input-group-text @error('supplier_id') is-invalid--border @enderror"
+                            id="category-addon"><i class="bi bi-person-badge"></i></span>
+                        <select class="form-select @error('supplier_id') is-invalid @enderror" name="supplier_id"
+                            id="supplier_id" aria-label="Seleccione la categoría del producto">
+                            <option selected disabled>Seleccione una opción</option>
+                            @foreach ($suppliers as $value)
+                                <option value="{{ $value->supplier_id }}"
+                                    {{ $product->supplier->supplier_id == $value->supplier_id ? 'selected' : '' }}>
+                                     {{ $value->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('supplier_id') <div class="alert alert-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
                 <div class="form__item">
                     <label for="category_id" class="form__label form__label--required">Categoría</label>
                     <div class="input-group">
@@ -155,7 +172,7 @@
                 </legend>
 
                 <div class="form__item">
-                    <label for="price_usd" class="form__label form__label--required">Precio en Dólares ($)</label>
+                    <label for="price_usd" class="form__label form__label--required">Precio de Costo ($)</label>
                     <div class="input-group">
                         <span class="form__icon input-group-text @error('price_usd') is-invalid--border @enderror"
                             id="price-usd-addon"><i class="bi bi-currency-dollar"></i></span>

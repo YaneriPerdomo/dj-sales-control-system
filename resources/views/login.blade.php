@@ -108,7 +108,7 @@
                     <span class="form__icon input-group-text" id="basic-addon1">
                         <i class="bi bi-person-circle"></i>
                     </span>
-                    <input type="search" name="user" class="form-control " placeholder="Yane3" aria-label="Username"
+                    <input type="search" name="user" class="form-control " placeholder="Ej: Admin" aria-label="Username"
                         aria-describedby="basic-addon1" autofocus value="{{ old('user') }}">
                 </div>
                  @error('user')

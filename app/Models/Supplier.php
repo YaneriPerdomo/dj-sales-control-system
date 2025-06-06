@@ -18,10 +18,15 @@ class Supplier extends Model
 
     protected $primaryKey = "supplier_id";
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function gender()
     {
         return $this->belongsTo(Gender::class, "gender_id");
     }
+
+    public function products(){
+        return $this->hasMany(Supplier::class,"supplier_id");
+    }
+   
 }

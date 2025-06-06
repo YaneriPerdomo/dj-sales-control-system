@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\DollarRate;
 use App\Models\Location;
 use App\Models\Product;
+use App\Models\Supplier;
 use DB;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -21,6 +22,7 @@ class ProductController extends Controller
         $products = Product::select(
             'name',
             'category_id',
+            "created_at",
             'brand_id',
             'location_id',
             "code",
@@ -28,12 +30,18 @@ class ProductController extends Controller
             "sale_profit_percentage",
             "discount_only_dollar",
             "description",
-            "slug"
+            "slug",
+            "supplier_id"
         )->
             with([
                 "category" => function ($query) {
                     $query->select('category_id', 'name')
-
+                    ;
+                }
+            ])
+            ->with([
+                "supplier" => function ($query) {
+                    $query->select('supplier_id', 'name')
                     ;
                 }
             ])
@@ -64,10 +72,16 @@ class ProductController extends Controller
         $categorys = Category::select('category_id', 'name')->get();
         $brands = Brand::select('brand_id', 'name')->get();
         $locations = Location::select('location_id', 'name')->get();
-
+        $suppliers = Supplier::select('supplier_id', 'name')->get();
         return view(
             "admin.catalogs.master-data.products.create",
-            ['categorys' => $categorys, 'brands' => $brands, 'locations' => $locations]
+            [
+                'categorys' => $categorys,
+                'brands' => $brands,
+                'locations' => $locations
+                ,
+                "suppliers" => $suppliers
+            ]
         );
     }
 
@@ -83,6 +97,7 @@ class ProductController extends Controller
             $product->category_id = $request->category_id;
             $product->brand_id = $request->brand_id;
             $product->code = $request->sku;
+            $product->supplier_id = $request->supplier_id;
             $product->location_id = $request->location_id;
             $product->description = $request->description;
             $product->price_dollar = $request->price_usd;
@@ -115,6 +130,7 @@ class ProductController extends Controller
             'brand_id',
             'location_id',
             "code",
+            "supplier_id",
             "price_dollar",
             "sale_profit_percentage",
             "discount_only_dollar",
@@ -124,6 +140,12 @@ class ProductController extends Controller
             ->with([
                 "category" => function ($query) {
                     $query->select('category_id', 'name')
+
+                    ;
+                }
+            ])->with([
+                "supplier" => function ($query) {
+                    $query->select('supplier_id', 'name')
 
                     ;
                 }
@@ -142,7 +164,7 @@ class ProductController extends Controller
         $categorys = Category::select('category_id', 'name')->get();
         $brands = Brand::select('brand_id', 'name')->get();
         $locations = Location::select('location_id', 'name')->get();
-
+        $suppliers = Supplier::select('supplier_id', 'name')->get();        
         if (!$product) {
             abort(404, 'No se pudo encontrar el registro');
         }
@@ -151,7 +173,8 @@ class ProductController extends Controller
             "categorys" => $categorys,
             "brands" => $brands,
             "locations" => $locations,
-            "product" => $product
+            "product" => $product,
+            "suppliers" => $suppliers
         ]);
     }
 
@@ -166,6 +189,7 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
         $product->code = $request->sku;
+        $product->supplier_id = $request->supplier_id;
         $product->location_id = $request->location_id;
         $product->description = $request->description;
         $product->price_dollar = $request->price_usd;
@@ -175,8 +199,8 @@ class ProductController extends Controller
         $product->save();
 
         DB::commit();
-        return redirect('producto/'.$slug.'/editar' )
-        ->with("alert-success", "El producto ha sido actualizado con éxito.");
+        return redirect('producto/' . $slug . '/editar')
+            ->with("alert-success", "El producto ha sido actualizado con éxito.");
 
     }
 }

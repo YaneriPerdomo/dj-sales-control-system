@@ -10,6 +10,8 @@ class Product extends Model {
         "brand_id",
         "location_id",
         "name",
+        "supplier_id",
+        "created_at",
         "price_dollar",
         "sale_profit_percentage",
         "discount_only_dollar",
@@ -27,6 +29,10 @@ class Product extends Model {
         return $this->belongsTo(Location::class, "location_id");
     }
 
+    public function goods(){
+        return $this->hasMany(Good::class, "good_id");
+    }
+
     public function brand()
     {
         return $this->belongsTo(Brand::class, "brand_id");
@@ -34,6 +40,11 @@ class Product extends Model {
     public function category()
     {
         return $this->belongsTo(Category::class, "category_id");
+    }
+
+     public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, "supplier_id");
     }
 
 }

@@ -25,7 +25,7 @@
                     <li>
                         <h6 class="dropdown-header">Gestión de Ventas</h6>
                     </li>
-                    <li><a class="dropdown-item" href="">Registrar Venta</a></li>
+                    <li><a class="dropdown-item" href="{{ route('register.create') }}">Registrar Venta</a></li>
                     <li><a class="dropdown-item" href="">Historial de Ventas</a></li>
                     <li>
                         <hr class="dropdown-divider">

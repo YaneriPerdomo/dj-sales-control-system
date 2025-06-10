@@ -19,6 +19,7 @@ class ProductController extends Controller
     public function index()
     {
 
+
         $products = Product::select(
             'name',
             'category_id',
@@ -66,6 +67,62 @@ class ProductController extends Controller
         );
     }
 
+    public function search( $buscado)
+    {
+        
+       
+
+        $products = Product::select(
+            'name',
+            'category_id',
+            "created_at",
+            'brand_id',
+            'location_id',
+            "code",
+            "price_dollar",
+            "sale_profit_percentage",
+            "discount_only_dollar",
+            "description",
+            "slug",
+            "supplier_id"
+        )
+        ->
+            with([
+                "category" => function ($query) {
+                    $query->select('category_id', 'name')
+                    ;
+                }
+            ])
+            ->with([
+                "supplier" => function ($query) {
+                    $query->select('supplier_id', 'name')
+                    ;
+                }
+            ])
+            ->with([
+                "brand" => function ($query) {
+                    $query->select('brand_id', 'name');
+                }
+            ])
+            ->with([
+                "location" => function ($query) {
+                    $query->select('location_id', 'name');
+                }
+            ])
+            ->whereLike('slug_name',  '%'.trim($buscado).'%')
+            ->paginate(8);
+        //With(el nombre del metodo del modelo);
+
+        $bs = DollarRate::select('in_bs')->first();
+
+
+        return view(
+            "admin.catalogs.master-data.products.show-all",
+            ['products' => $products, 'bs' => $bs, 'inputSearch' => $buscado]
+        );
+    }
+
+
     public function create()
     {
 
@@ -86,13 +143,14 @@ class ProductController extends Controller
     }
 
     public function store(Request $request)
-    {
-        try {
+    {  
             DB::beginTransaction();
             $product = new Product();
 
+            $slug_name = converter_slug($request->product_name);
             $slug = converter_slug($request->product_name, $request->sku);
             $product->slug = $slug;
+            $product->slug_name = $slug_name;
             $product->name = $request->product_name;
             $product->category_id = $request->category_id;
             $product->brand_id = $request->brand_id;
@@ -109,16 +167,7 @@ class ProductController extends Controller
             DB::commit();
             return redirect('productos')->with("alert-success", "El producto ha sido registrado con éxito.");
 
-        } catch (QueryException $ex) { //Error de consulta de nuestra base de datos
-            abort(500, 'Sucedio un error de actualizacion de usuario');
-            echo $ex->getMessage() . ' ' . $ex->getLine();
-        } catch (PDOException $ex) { //Error relacionado con la base de datos a mas detalles
-            abort(500, 'Sucedio un error en la base de datos');
-            echo $ex->getMessage() . ' ' . $ex->getLine();
-        } catch (Exception $ex) { //Error generico que se puede presentar 
-            abort(500, 'Error generico inesperado ');
-            echo $ex->getMessage() . ' ' . $ex->getLine();
-        }
+         
 
     }
 
@@ -144,12 +193,12 @@ class ProductController extends Controller
                     ;
                 }
             ])->with([
-                "supplier" => function ($query) {
-                    $query->select('supplier_id', 'name')
+                    "supplier" => function ($query) {
+                        $query->select('supplier_id', 'name')
 
-                    ;
-                }
-            ])
+                        ;
+                    }
+                ])
             ->with([
                 "brand" => function ($query) {
                     $query->select('brand_id', 'name');
@@ -164,7 +213,7 @@ class ProductController extends Controller
         $categorys = Category::select('category_id', 'name')->get();
         $brands = Brand::select('brand_id', 'name')->get();
         $locations = Location::select('location_id', 'name')->get();
-        $suppliers = Supplier::select('supplier_id', 'name')->get();        
+        $suppliers = Supplier::select('supplier_id', 'name')->get();
         if (!$product) {
             abort(404, 'No se pudo encontrar el registro');
         }
@@ -182,9 +231,10 @@ class ProductController extends Controller
     {
         DB::beginTransaction();
         $product = Product::where('slug', $old_slug)->first();
-
+        $slug_name = converter_slug($request->producto_name);
         $slug = converter_slug($request->product_name, $request->sku);
         $product->slug = $slug;
+        $product->slug_name = $slug_name;
         $product->name = $request->product_name;
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;

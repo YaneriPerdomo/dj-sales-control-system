@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Configuration | Biblioteca B</title>
+    <title>Listado de Proveedores | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -65,7 +65,7 @@
                         </thead>
                         <tbody>
                             @if ($suppliers->items() == [])
-                                <p>No hay clientes registrados por los momentos.</p>
+                                <p>No hay proveedores registrados por los momentos.</p>
                             @else
                                 @foreach ($suppliers->items() as $value)
                                     <tr class='show'>

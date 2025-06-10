@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Configuration | Biblioteca B</title>
+    <title>Listado de ubicaciones | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -40,7 +40,7 @@
                 <div>
                     <a href="{{ route('location.create') }}" class="text-decoration-none text-white">
                         <button class="button button--color-blue">
-                            Registar nueva ubicacion
+                            Registar nueva ubicación
                         </button>
                     </a>
                 </div>
@@ -55,7 +55,7 @@
                     <table class='dataTable'>
                         <thead>
                             <tr>
-                                <th>Nombre de la ubicacion</th>
+                                <th>Nombre de la ubicación</th>
 
                                 <th>Operaciones</th>
                             </tr>
@@ -69,7 +69,7 @@
                                         <td>{{ $value->name }}</td>
                                         </td>
                                         <td class='table__operations'>
-                                            <a href="">
+                                            <a href="{{ route('location.delete', $value->slug)}}">
                                                 <button type="button" class="button button--color-red ">
                                                     <i class='bi bi-trash''></i>
                                                                         </button>

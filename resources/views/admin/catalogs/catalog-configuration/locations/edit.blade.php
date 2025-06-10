@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Configuration | Biblioteca B</title>
+    <title>Editar ubicación | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../css/utilities.css">
     <link rel="stylesheet" href="../../../css/layouts/_base.css">
     <link rel="stylesheet" href="../../../css/components/_button.css">
@@ -29,11 +29,11 @@
             <div class="button--back">
                 <a href="{{ route('location.index') }}">
                     <i class="bi bi-arrow-left-square text-grey"></i> <button class="button text-grey"
-                        type="button">Volver al listado</button>
+                        type="button">Volver al listado de ubicaciones</button>
                 </a>
             </div>
             <legend class="form__title">
-                <b> Editar Ubicacion</b>
+                <b> Editar ubicación</b>
             </legend>
             @if (session('alert-success'))
                 <div class="alert alert-success">

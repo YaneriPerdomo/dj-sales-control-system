@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Demo</title>
+    <title>Panel de control | Sistema Web DJ</title>
     <link rel="stylesheet" href="../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">

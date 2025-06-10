@@ -30,7 +30,8 @@ class StockReportController extends Controller
                     "sale_profit_percentage",
                     "price_dollar",
                     "slug",
-                    "stock_available"
+                    "stock_available",
+                    "discount_only_dollar"
                 )->whereBetween('stock_available', [1, 8])
                     ->with([
                         "location" => function ($query) {
@@ -49,7 +50,8 @@ class StockReportController extends Controller
 
                     "price_dollar",
                     "slug",
-                    "stock_available"
+                    "stock_available",
+                    "discount_only_dollar"
                 )->where('stock_available', '=', '0')
                     ->with([
                         "location" => function ($query) {
@@ -67,7 +69,8 @@ class StockReportController extends Controller
                     "price_dollar",
                     "slug",
                     "sale_profit_percentage",
-                    "stock_available"
+                    "stock_available",
+                    "discount_only_dollar"
                 )->with([
                             "location" => function ($query) {
                                 $query->select('location_id', 'name');

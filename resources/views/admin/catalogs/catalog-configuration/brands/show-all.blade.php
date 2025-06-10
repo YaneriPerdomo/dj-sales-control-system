@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Configuration | Biblioteca B</title>
+    <title>Listado de Marcas | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -70,7 +70,7 @@
                                         <td>{{ $value->name }}</td>
                                         </td>
                                         <td class='table__operations'>
-                                            <a href="">
+                                            <a href="{{ route('brand.delete', $value->slug )}}">
                                                 <button type="button" class="button button--color-red ">
                                                     <i class='bi bi-trash''></i>
                                                         </button>

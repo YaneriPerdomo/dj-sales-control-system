@@ -36,3 +36,9 @@ main {
 .height-full {
     height: 100%;
 }
+
+.alert-success,
+.alert {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+}

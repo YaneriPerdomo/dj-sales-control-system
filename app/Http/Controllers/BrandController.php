@@ -96,4 +96,24 @@ class BrandController extends Controller
             echo $ex->getMessage() . ' ' . $ex->getLine();
         }
     }
+
+    public function delete($slug)
+    {
+
+        return view(
+            "admin.catalogs.catalog-configuration.brands.delete",
+            ["slug" => $slug]
+        );
+    }
+    public function destroy($slug)
+    {
+
+        $supplier = Brand::where('slug', $slug)->first();
+
+        $name = $supplier->name;
+        $supplier->delete();
+
+        return redirect('marcas')
+            ->with("alert-success", 'La  marca "' . $name . '" ha sido eliminada' . " correctamente.");
+    }
 }

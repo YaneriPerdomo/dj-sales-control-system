@@ -94,5 +94,27 @@ class CategoryController extends Controller
             abort(500, 'Error generico inesperado ');
             echo $ex->getMessage() . ' ' . $ex->getLine();
         }
+
     }
+
+    public function delete($slug)
+    {
+
+        return view(
+            "admin.catalogs.catalog-configuration.categorys.delete",
+            ["slug" => $slug]
+        );
+    }
+    public function destroy($slug)
+    {
+
+        $supplier = Category::where('slug', $slug)->first();
+
+        $name = $supplier->name;
+        $supplier->delete();
+
+        return redirect('categorias')
+            ->with("alert-success", 'La  categoria "' . $name . '" ha sido eliminada' . " correctamente.");
+    }
+
 }

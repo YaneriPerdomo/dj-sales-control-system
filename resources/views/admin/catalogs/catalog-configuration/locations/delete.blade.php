@@ -29,7 +29,7 @@
                 <div>
                     <b class="card__title">
                         <i class="bi bi-exclamation-diamond"></i>
-                        Eliminar Categoria
+                        Eliminar Ubicacion
                     </b><br>
                     <span class="card__sub-title">
                         Esta acción es permanente y no se puede deshacer
@@ -39,18 +39,18 @@
                 <div class="card__message card__message--delete-acount">
                     <i class="text-red"> <u>Advertencia:</u></i><br>
                     <p>
-                        La categoria se eliminará permanentemente. Sin embargo, una vez que la elimines, los productos
-                        no se asociarán a ninguna categoria hasta que selecciones una nueva.
+                        La ubicación se eliminará permanentemente. Sin embargo, una vez que la elimines, los productos
+                        no se asociarán a ninguna ubicación hasta que selecciones una nueva.
                     </p>
                 </div>
                 <hr>
                 <div class="card__button-option flex-full__justify-content-between ">
-                    <a href="{{ route('category.index') }}" class="text-decoration-white card__link-cancel">
+                    <a href="{{ route('location.index') }}" class="text-decoration-white card__link-cancel">
                         <button class="button button--color-grey" type="submit">
                             Cancelar
                         </button>
                     </a>
-                    <form action="{{ route('category.destroy', $slug) }}" method="POST">
+                    <form action="{{ route('location.destroy', $slug ) }}" method="POST">
                         @method('DELETE')
                         @csrf
                         <button class="card__button button button--color-red" type="submit">

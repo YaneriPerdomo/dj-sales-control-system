@@ -17,7 +17,8 @@ class Product extends Model {
         "discount_only_dollar",
         "stock_available",
         "description",
-        "slug"
+        "slug",
+        "slug_search"
     ];
 
     protected $primaryKey = "product_id";

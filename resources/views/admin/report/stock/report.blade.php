@@ -110,29 +110,58 @@
                         <td>{{ $value->code ?? 'N/A' }}</td> {{-- Mejor "N/A" que "2" si el código no existe --}}
                         <td>{{ $value->name }}</td>
                         <td>
-                            @php
-                                $value->price_dollar;
-                                $value->sale_profit_percentage;
-
-                                $decimal = number_format($value->sale_profit_percentage / 100, 2);
-
-
-                                $ganancia = $value->price_dollar * $decimal;
+                                @php
+                                                $value->price_dollar;
+                                                $value->sale_profit_percentage;
+                                                $porcentaje_ganancia_decimal = $value->sale_profit_percentage / 100;
 
 
-
-                                $formula = $value->price_dollar + $ganancia;
-
-                                $respuesta = number_format($formula, 2, ',', '.');
+                                                $monto_ganancia_dolares = $value->price_dollar * $porcentaje_ganancia_decimal;
 
 
-                                echo 'USD: ' . $respuesta .
-                                    ' <br> BS: ' . number_format(number_format($formula, 2) * $bs->in_bs, 2, ',', '.');
-                            @endphp
+                                                $precio_venta_inicial = $value->price_dollar + $monto_ganancia_dolares;
+
+
+                                                if ($value->discount_only_dollar) {
+
+
+                                                    $porcentaje_descuento_decimal = $value->discount_only_dollar / 100;
+
+                                                    $monto_descuento_dolares = $precio_venta_inicial * $porcentaje_descuento_decimal;
+
+                                                    $precio_final_dolares_calculado = $precio_venta_inicial - $monto_descuento_dolares;
+
+                                                    $precio_final_dolares_formateado = number_format($precio_final_dolares_calculado, 2, ',', '.');
+
+                                                    $precio_final_bolivares_calculado = $precio_final_dolares_calculado * $bs->in_bs;
+                                                    $precio_final_bolivares_formateado = number_format($precio_final_bolivares_calculado, 2, ',', '.');
+
+
+                                                    echo 'USD ' . $precio_final_dolares_formateado .
+                                                        ' <br> BS: ' . $precio_final_bolivares_formateado;
+
+                                                } else {
+                                                    // Si no hay un porcentaje de descuento específico
+
+                                                    // --- Formateo para la visualización en USD (el precio de venta inicial) ---
+                                                    $precio_venta_dolares_formateado = number_format($precio_venta_inicial, 2, ',', '.');
+
+                                                    // --- Cálculo y Formateo para la visualización en Bolívares (BS) ---
+                                                    // Multiplicamos el precio de venta inicial (numérico) por la tasa de cambio
+                                                    $precio_venta_bolivares_calculado = $precio_venta_inicial * $bs->in_bs;
+                                                    $precio_venta_bolivares_formateado = number_format($precio_venta_bolivares_calculado, 2, ',', '.');
+
+                                                    // Muestra los precios en USD y BS sin descuento
+                                                    echo 'USD: ' . $precio_venta_dolares_formateado .
+                                                        ' <br> BS: ' . $precio_venta_bolivares_formateado;
+                                                }
+
+
+                                            @endphp
                         </td>
-                        <td>{{ $value->location->name ?? 'Desconocida' }}</td> {{-- Considera si location podría ser null
+                        <td>{{ $value->location->name ?? 'No hay ninguna ubicación asociada' }}</td> {{-- Considera si location podría ser null
                         --}}
-                        <td>{{ $value->stock_available }}</td>
+                        <td>{{ $value->stock_available ?? 0 }}</td>
                         @if ($state == true)
                             <td>
                                 @if ($value->stock_available == 0)

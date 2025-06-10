@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Configuration | Biblioteca B</title>
+    <title>Registrar Nueva Categorías | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../css/utilities.css">
     <link rel="stylesheet" href="../../../css/layouts/_base.css">
     <link rel="stylesheet" href="../../../css/components/_button.css">
@@ -23,7 +23,7 @@
     <x-header-admin></x-header-admin>
     <x-selection-operations></x-selection-operations>
     <main class="flex__grow-2 flex-full__aligh-start">
-        <form action="{{ route('location.create') }}" method="post" class="form  w-adjustable-s">
+        <form action="{{ route('category.create') }}" method="post" class="form  w-adjustable-s">
             @csrf
 
             @method('POST')

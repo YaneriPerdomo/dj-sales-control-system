@@ -4,15 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Configuration | Biblioteca B</title>
-    <link rel="stylesheet" href="../../../../../css/utilities.css">
-    <link rel="stylesheet" href="../css/layouts/_base.css">
-    <link rel="stylesheet" href="../css/components/_button.css">
-    <link rel="stylesheet" href="../css/components/_footer.css">
-    <link rel="stylesheet" href="../css/components/_form.css">
-    <link rel="stylesheet" href="../../../../css/components/_table.css">
-    <link rel="stylesheet" href="../../../../css/components/_header.css">
-    <link rel="stylesheet" href="../css/components/_selection-operations.css">
+    <title>Listado de Productos | Sistema Web DJ</title>
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/utilities.css">
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/layouts/_base.css">
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/components/_button.css">
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/components/_footer.css">
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/components/_form.css">
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/components/_table.css">
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/components/_header.css">
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/components/_search.css">
+    <link rel="stylesheet" href="../{{ isset($inputSearch) ? '../' : ''}}css/components/_selection-operations.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
@@ -35,11 +36,47 @@
         <article class="form w-100 ">
             <div class="flex-full__justify-content-between p-0">
                 <div>
-                    <legend><b>Listado de Productos</b></legend>
+                    <legend class="mb-2"><b>Listado de Productos</b></legend>
+                    <div class="search">
+                        <div class="input-group  search__seeker">
+                            <span class="search__icon-wrapper input-group-text" id="product-name-addon">
+                                <i class="bi bi-search search__icon"></i>
+                            </span>
+                            <input type="text" name="product_name" id="product_name"
+                                class="search__input search__input--text form-control"
+                                placeholder="Ej: Llanta de repuesto" aria-label="Nombre del producto" autofocus
+                                value="{{ isset($inputSearch) ? str_replace('-', ' ', $inputSearch) : '' }}">
+                        </div>
+                        <div class="search__action">
+                            <button class="button search__button button--color-blue button--search" type="button">
+                                Buscar Producto
+                            </button>
+                        </div>
+                    </div>
+                    <script>
+                        let ItemButttonSearh = document.querySelector('.button--search');
+                        let ItemFomSearch = document.querySelector('form');
+                        let ItemInputNameProduct = document.querySelector('#product_name');
+                        function slugify(text) {
+                            const lowercase = text.toLowerCase();
+                            const slug = lowercase.replace(/[^a-z0-9]+/g, '-');
+                            const trimmedSlug = slug.replace(/^-+|-+$/g, '');
+                            return trimmedSlug;
+                        }
+                        ItemButttonSearh.addEventListener('click', async e => {
+                            e.preventDefault();
+                            let inputValue = slugify(ItemInputNameProduct.value);
+                            if (inputValue != "") {
+                                return window.location.href = '../../productos/' + inputValue.trim() + '/buscar';
+                            } else {
+                                return window.location.href = '../../productos';
+                            }
+                        })
+                    </script>
                 </div>
                 <div>
                     <a href="{{ route('product.create') }}" class="text-decoration-none text-white">
-                        <button class="button button--color-blue">
+                        <button class="button button--color-black">
                             Registrar nuevo producto
                         </button>
                     </a>
@@ -62,8 +99,9 @@
                                 <th>Marca</th>
                                 <th>Precio de Costo ($) </th>
                                 <th> Margen de Ganancia (%) </th>
+                                <th> Descuento </th>
                                 <td>Precio de Venta</td>
-                                <th> Descuento por Pago en Divisas ($) </th>
+
 
                                 <th>Descripcion</th>
                                 <td>
@@ -74,41 +112,82 @@
                         </thead>
                         <tbody>
                             @if ($products->items() == [])
-                                <p>No hay productos registrados por los momentos.</p>
+                                @if (isset($inputSearch))
+                                    <br>
+                                    <p>No hay productos registrados que coincidan con tu búsqueda.</p>
+                                    <ul>
+                                        <li>Revisa la ortografía de la palabra.</li>
+                                        <li>Utiliza palabras más genéricas o menos palabras.</li>
+                                    </ul>
+                                @else
+                                    <br>
+                                    <p>No hay productos registrados por los momentos.</p>
+                                @endif
+
                             @else
                                 @foreach ($products->items() as $value)
                                     <tr class='show'>
-                                        <td>{{ $value->supplier->name}}</td>
+                                        <td>{{ $value->supplier->name ?? "No hay ningun proveedor asociado"}}</td>
                                         <td>{{ $value->code }}</td>
                                         <td>{{ $value->name }}</td>
-                                        <td>{{ $value->category->name }}</td>
-                                        <td>{{ $value->brand->name }}</td>
+                                        <td>{{ $value->category->name ?? "No hay ninguna categoria asociada" }}</td>
+                                        <td>{{ $value->brand->name ?? "No hay ninguna marca asociada"}}</td>
                                         <td>{{ number_format($value->price_dollar, 2, ',', '.') }}$</td>
                                         <td>{{$value->sale_profit_percentage}}%</td>
+                                        <td>
+                                            {{ $value->discount_only_dollar ?? 0}}%
+                                        </td>
                                         <td>
                                             @php
                                                 $value->price_dollar;
                                                 $value->sale_profit_percentage;
+                                                $porcentaje_ganancia_decimal = $value->sale_profit_percentage / 100;
 
-                                                $decimal = number_format($value->sale_profit_percentage / 100, 2);
-                                              
 
-                                                $ganancia = $value->price_dollar * $decimal;
-                                               
+                                                $monto_ganancia_dolares = $value->price_dollar * $porcentaje_ganancia_decimal;
 
-                                                
-                                                $formula =  $value->price_dollar + $ganancia;
-                                                
-                                                 $respuesta = number_format($formula, 2, ',', '.');
-                                               
 
-                                                 echo  'USD: ' . $respuesta .
-                                                    ' <br> BS: ' . number_format(number_format($formula, 2) * $bs->in_bs, 2, ',', '.');
+                                                $precio_venta_inicial = $value->price_dollar + $monto_ganancia_dolares;
+
+
+                                                if ($value->discount_only_dollar) {
+
+
+                                                    $porcentaje_descuento_decimal = $value->discount_only_dollar / 100;
+
+                                                    $monto_descuento_dolares = $precio_venta_inicial * $porcentaje_descuento_decimal;
+
+                                                    $precio_final_dolares_calculado = $precio_venta_inicial - $monto_descuento_dolares;
+
+                                                    $precio_final_dolares_formateado = number_format($precio_final_dolares_calculado, 2, ',', '.');
+
+                                                    $precio_final_bolivares_calculado = $precio_final_dolares_calculado * $bs->in_bs;
+                                                    $precio_final_bolivares_formateado = number_format($precio_final_bolivares_calculado, 2, ',', '.');
+
+
+                                                    echo 'USD ' . $precio_final_dolares_formateado .
+                                                        ' <br> BS: ' . $precio_final_bolivares_formateado;
+
+                                                } else {
+                                                    // Si no hay un porcentaje de descuento específico
+
+                                                    // --- Formateo para la visualización en USD (el precio de venta inicial) ---
+                                                    $precio_venta_dolares_formateado = number_format($precio_venta_inicial, 2, ',', '.');
+
+                                                    // --- Cálculo y Formateo para la visualización en Bolívares (BS) ---
+                                                    // Multiplicamos el precio de venta inicial (numérico) por la tasa de cambio
+                                                    $precio_venta_bolivares_calculado = $precio_venta_inicial * $bs->in_bs;
+                                                    $precio_venta_bolivares_formateado = number_format($precio_venta_bolivares_calculado, 2, ',', '.');
+
+                                                    // Muestra los precios en USD y BS sin descuento
+                                                    echo 'USD: ' . $precio_venta_dolares_formateado .
+                                                        ' <br> BS: ' . $precio_venta_bolivares_formateado;
+                                                }
+
+
                                             @endphp
                                         </td>
-                                        <td>
-                                            {{ $value->discount_only_dollar }}$
-                                        </td>
+
                                         <td>
                                             {{ $value->description }}
                                         </td>
@@ -121,16 +200,16 @@
                                             <a href="{{ route('product.delete', $value->slug)}}">
                                                 <button type="button" class="button button--color-red ">
                                                     <i class='bi bi-trash''></i>
-                                                                                                                            </button>
-                                                                                                                        </a>
+                                                                                                                                                                                                                                                                                                            </button>
+                                                                                                                                                                                                                                                                                                        </a>
 
-                                                                                                                        <a href="{{ route('product.edit', $value->slug)}}">
-                                                                                                                            <button class="button button--color-orange">
-                                                                                                                               <i class="bi bi-pencil-square"></i>
-                                                                        </button>
-                                                                    </a>
-                                                                </td>
-                                                            </tr>
+                                                                                                                                                                                                                                                                                                        <a href="{{ route('product.edit', $value->slug)}}">
+                                                                                                                                                                                                                                                                                                            <button class="button button--color-orange">
+                                                                                                                                                                                                                                                                                                               <i class="bi bi-pencil-square"></i>
+                                                                                                                                                                                                                                                        </button>
+                                                                                                                                                                                                                                                    </a>
+                                                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                                            </tr>
                                 @endforeach
                             @endif
                         </tbody>

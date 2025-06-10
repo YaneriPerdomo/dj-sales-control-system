@@ -31,7 +31,7 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
-        try {
+       
             DB::beginTransaction();
             $slug = converter_slug($request->name);
 
@@ -48,17 +48,7 @@ class SupplierController extends Controller
             $message = $request->gender_id == 1 ? "El proveedor ha sido registrado" : "La proveedora ha sido registrada";
             DB::commit();
             return redirect('proveedores')->with("alert-success", $message . " con éxito.");
-
-        } catch (QueryException $ex) { //Error de consulta de nuestra base de datos
-            abort(500, 'Sucedio un error de actualizacion de usuario');
-            echo $ex->getMessage() . ' ' . $ex->getLine();
-        } catch (PDOException $ex) { //Error relacionado con la base de datos a mas detalles
-            abort(500, 'Sucedio un error en la base de datos');
-            echo $ex->getMessage() . ' ' . $ex->getLine();
-        } catch (Exception $ex) { //Error generico que se puede presentar 
-            abort(500, 'Error generico inesperado ');
-            echo $ex->getMessage() . ' ' . $ex->getLine();
-        }
+ 
 
     }
 

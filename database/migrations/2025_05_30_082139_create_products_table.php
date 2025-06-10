@@ -12,8 +12,8 @@ return new class extends Migration {
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id('product_id');
-             $table->foreignId('supplier_id')
-                ->constrained('suppliers', 'supplier_id')->onDelete('cascade');
+            $table->foreignId('supplier_id')->nullable()
+                ->constrained('suppliers', 'supplier_id')->onDelete('set null');
             $table->foreignId('category_id')
                 ->constrained('categorys', 'category_id')->onDelete('cascade');
             $table->foreignId('brand_id')
@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->decimal('price_dollar', 10, 2)
                 ->default(0)
                 ->comment('Precio del producto en dólares pero ten en cuenta que al momento de la venta será en bolívares su monto principal');
-            
+
             $table->integer('sale_profit_percentage')->default(0);
             $table->integer('discount_only_dollar')->nullable();
             $table->integer('stock_available')->default(0);

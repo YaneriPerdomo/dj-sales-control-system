@@ -15,6 +15,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchandiseController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseHistoryController;
+use App\Http\Controllers\SalesManagementController;
 use App\Http\Controllers\StockReportController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,8 @@ Route::controller(CategoryController::class)->group(function () {
     Route::post('categoria/registrar', 'store')->name('category.store');
     Route::get('categoria/{slug}/editar', 'edit')->name('category.edit');
     Route::put('categoria/{slug}/editar', 'update')->name('category.update');
+    Route::get('categoria/{slug}/eliminar', 'delete')->name('category.delete');
+    Route::delete('categoria/{slug}/eliminar', 'destroy')->name('category.destroy');
 });
 
 Route::controller(BrandController::class)->group(function () {
@@ -50,6 +53,8 @@ Route::controller(BrandController::class)->group(function () {
     Route::post('marca/registrar', 'store')->name('brand.store');
     Route::get('marca/{slug}/editar', 'edit')->name('brand.edit');
     Route::put('marca/{slug}/editar', 'update')->name('brand.update');
+    Route::get('marca/{slug}/eliminar', 'delete')->name('brand.delete');
+    Route::delete('marca/{slug}/eliminar', 'destroy')->name('brand.destroy');
 });
 
 
@@ -60,6 +65,8 @@ Route::controller(LocationController::class)->group(function () {
     Route::post('ubicacion/registrar', 'store')->name('location.store');
     Route::get('ubicacion/{slug}/editar', 'edit')->name('location.edit');
     Route::put('ubicacion/{slug}/editar', 'update')->name('location.update');
+    Route::get('ubicacion/{slug}/eliminar', 'delete')->name('location.delete');
+    Route::delete('ubicacion/{slug}/eliminar', 'destroy')->name('location.destroy');
 });
 
 Route::controller(DollarRateController::class)->group(function () {
@@ -85,6 +92,8 @@ Route::controller(SupplierController::class)->group(function () {
 
 Route::controller(ProductController::class)->group(function () {
     Route::get('productos', 'index')->name('product.index');
+    Route::post('productos', 'index')->name('product.index');
+    Route::get('productos/{buscado}/buscar', 'search')->name('product.search');
     Route::get('producto/registrar', 'create')->name('product.create');
     Route::post('producto/registrar', 'store')->name('product.store');
     Route::get('producto/{slug}/editar', 'edit')->name('product.edit');
@@ -95,6 +104,7 @@ Route::controller(ProductController::class)->group(function () {
 
 Route::controller(AllProductsStockController::class)->group(function () {
     Route::get('todos-los-productos-y-stock', 'index')->name('all-products-stock.index');
+    Route::get('todos-los-productos-y-stock/{productSearch}/buscar', 'search')->name('all-products-stock.search');
     Route::get('todos-los-productos-y-stock/{slug}/editar-stock', 'edit')->name('all-product-stock.edit');
     Route::put('todos-los-productos-y-stock/{slug}/editar-stock', 'update')->name('all-product-stock.update');
 });
@@ -131,6 +141,11 @@ Route::controller(GoodController::class)->group(function () {
 Route::controller(MerchandiseController::class)->group(function () {
     Route::get('mercancia/devolver', 'create')->name('return-merchandise.create');
     Route::post('mercancia/devolver', 'store')->name('return-merchandise.store');
+});
+
+Route::controller(SalesManagementController::class)->group(function () {
+    Route::get('venta/registrar', 'create')->name('register.create');
+     Route::post('venta/registrar', 'searchCurtomer')->name('register.search-card');
 });
 
 Route::controller(PurchaseHistoryController::class)->group(function () {

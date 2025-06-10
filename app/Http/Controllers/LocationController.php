@@ -96,4 +96,24 @@ class LocationController extends Controller
             echo $ex->getMessage() . ' ' . $ex->getLine();
         }
     }
+
+    public function delete($slug)
+    {
+
+        return view(
+            "admin.catalogs.catalog-configuration.locations.delete",
+            ["slug" => $slug]
+        );
+    }
+    public function destroy($slug)
+    {
+
+        $supplier = Location::where('slug', $slug)->first();
+
+        $name = $supplier->name;
+        $supplier->delete();
+
+        return redirect('ubicaciones')
+        ->with("alert-success", 'La ubicacion "'.$name.'" ha sido eliminada' . " correctamente.");
+    }
 }

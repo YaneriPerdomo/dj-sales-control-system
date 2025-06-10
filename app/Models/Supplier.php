@@ -13,12 +13,13 @@ class Supplier extends Model
         "name",
         "telephone_number",
         "address",
-        'slug'
+        'slug', 
+        'created_at'
     ];
 
     protected $primaryKey = "supplier_id";
-
-    public $timestamps = true;
+    
+     const UPDATED_AT = null;
 
     public function gender()
     {

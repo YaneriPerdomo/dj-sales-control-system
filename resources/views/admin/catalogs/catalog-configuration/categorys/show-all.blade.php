@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Configuration | Biblioteca B</title>
+    <title>Listado de Categorías | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -35,7 +35,7 @@
         <article class="form w-adjustable-s  ">
             <div class="flex-full__justify-content-between p-0">
                 <div>
-                    <legend><b>Listado de Categorias</b></legend>
+                    <legend><b>Listado de Categorías</b></legend>
                 </div>
                 <div>
                     <a href="{{ route('category.create') }}" class="text-decoration-none text-white">
@@ -63,14 +63,14 @@
                         </thead>
                         <tbody>
                             @if ($categories->items() == [])
-                                <p>No hay cargos registrados por los momentos.</p>
+                                <p>No hay categorias registradas por los momentos.</p>
                             @else
                                 @foreach ($categories->items() as $value)
                                     <tr class='show'>
                                         <td>{{ $value->name }}</td>
                                         </td>
                                         <td class='table__operations'>
-                                            <a href="">
+                                            <a href="{{ route('category.delete', $value->slug )}}">
                                                 <button type="button" class="button button--color-red ">
                                                     <i class='bi bi-trash''></i>
                                                         </button>

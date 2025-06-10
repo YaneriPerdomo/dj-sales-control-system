@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->integer('telephone_number')->nullable()->unique();
             $table->string('address', 120)->nullable()->unique();
             $table->string('slug', 90)->unique();
-             $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
         });
     }
 

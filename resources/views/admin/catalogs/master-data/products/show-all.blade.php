@@ -81,6 +81,33 @@
                         </button>
                     </a>
                 </div>
+                @php
+
+                    function generate_cost_sale($cost_price, $profit_margin, $discount = 0, $bs = 0)
+                    {
+                        $porcentaje_ganancia_decimal = $profit_margin / 100;
+                        $monto_ganancia_dolares = $cost_price * $porcentaje_ganancia_decimal;
+                        $precio_venta_inicial = $cost_price + $monto_ganancia_dolares;
+
+                        if ($discount) {
+                            $porcentaje_descuento_decimal = $discount / 100;
+                            $monto_descuento_dolares = $precio_venta_inicial * $porcentaje_descuento_decimal;
+                            $precio_final_dolares_calculado = $precio_venta_inicial - $monto_descuento_dolares;
+                            $precio_final_dolares_formateado = number_format($precio_final_dolares_calculado, 2, ',', '.');
+                            $precio_final_bolivares_calculado = $precio_final_dolares_calculado * $bs;
+                            $precio_final_bolivares_formateado = number_format($precio_final_bolivares_calculado, 2, ',', '.');
+                            return 'USD:' . $precio_final_dolares_formateado .
+                                '<br> BS:' . $precio_final_bolivares_formateado;
+                        } else {
+                            $precio_venta_dolares_formateado = number_format($precio_venta_inicial, 2, ',', '.');
+                            $precio_venta_bolivares_calculado = $precio_venta_inicial * $bs;
+                            $precio_venta_bolivares_formateado = number_format($precio_venta_bolivares_calculado, 2, ',', '.');
+                            return 'USD:' . $precio_venta_dolares_formateado .
+                                '<br> BS:' . $precio_venta_bolivares_formateado;
+                        }
+                    }
+
+                @endphp
             </div>
             <div class="">
                 @if (session('alert-success'))
@@ -139,77 +166,33 @@
                                         </td>
                                         <td>
                                             @php
-                                                $value->price_dollar;
-                                                $value->sale_profit_percentage;
-                                                $porcentaje_ganancia_decimal = $value->sale_profit_percentage / 100;
-
-
-                                                $monto_ganancia_dolares = $value->price_dollar * $porcentaje_ganancia_decimal;
-
-
-                                                $precio_venta_inicial = $value->price_dollar + $monto_ganancia_dolares;
-
-
-                                                if ($value->discount_only_dollar) {
-
-
-                                                    $porcentaje_descuento_decimal = $value->discount_only_dollar / 100;
-
-                                                    $monto_descuento_dolares = $precio_venta_inicial * $porcentaje_descuento_decimal;
-
-                                                    $precio_final_dolares_calculado = $precio_venta_inicial - $monto_descuento_dolares;
-
-                                                    $precio_final_dolares_formateado = number_format($precio_final_dolares_calculado, 2, ',', '.');
-
-                                                    $precio_final_bolivares_calculado = $precio_final_dolares_calculado * $bs->in_bs;
-                                                    $precio_final_bolivares_formateado = number_format($precio_final_bolivares_calculado, 2, ',', '.');
-
-
-                                                    echo 'USD ' . $precio_final_dolares_formateado .
-                                                        ' <br> BS: ' . $precio_final_bolivares_formateado;
-
-                                                } else {
-                                                    // Si no hay un porcentaje de descuento específico
-
-                                                    // --- Formateo para la visualización en USD (el precio de venta inicial) ---
-                                                    $precio_venta_dolares_formateado = number_format($precio_venta_inicial, 2, ',', '.');
-
-                                                    // --- Cálculo y Formateo para la visualización en Bolívares (BS) ---
-                                                    // Multiplicamos el precio de venta inicial (numérico) por la tasa de cambio
-                                                    $precio_venta_bolivares_calculado = $precio_venta_inicial * $bs->in_bs;
-                                                    $precio_venta_bolivares_formateado = number_format($precio_venta_bolivares_calculado, 2, ',', '.');
-
-                                                    // Muestra los precios en USD y BS sin descuento
-                                                    echo 'USD: ' . $precio_venta_dolares_formateado .
-                                                        ' <br> BS: ' . $precio_venta_bolivares_formateado;
-                                                }
-
-
+                                                echo generate_cost_sale(
+                                                    $value->price_dollar,
+                                                    $value->sale_profit_percentage,
+                                                    $value->discount_only_dollar,
+                                                    $bs->in_bs
+                                                );
                                             @endphp
                                         </td>
-
                                         <td>
                                             {{ $value->description }}
                                         </td>
                                         <td>
                                             {{ substr($value->created_at, 0, 10) }}
                                         </td>
-
                                         <td class='table__operations'>
-
                                             <a href="{{ route('product.delete', $value->slug)}}">
                                                 <button type="button" class="button button--color-red ">
                                                     <i class='bi bi-trash''></i>
-                                                                                                                                                                                                                                                                                                            </button>
-                                                                                                                                                                                                                                                                                                        </a>
-
-                                                                                                                                                                                                                                                                                                        <a href="{{ route('product.edit', $value->slug)}}">
-                                                                                                                                                                                                                                                                                                            <button class="button button--color-orange">
-                                                                                                                                                                                                                                                                                                               <i class="bi bi-pencil-square"></i>
-                                                                                                                                                                                                                                                        </button>
-                                                                                                                                                                                                                                                    </a>
-                                                                                                                                                                                                                                                </td>
-                                                                                                                                                                                                                                            </tr>
+                                                                                </button>
+                                                                            </a>
+                                                                            <a href="{{ route('product.edit', $value->slug)}}">
+                                                                                <button class="button button--color-orange">
+                                                                                    <i class="bi bi-pencil-square"></i>
+                                                                                </button>
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
                                 @endforeach
                             @endif
                         </tbody>

@@ -18,7 +18,7 @@
                     <li><a class="dropdown-item" href="{{ route('good.create') }}">Registrar Mercancia</a></li>
                     <li><a class="dropdown-item" href="{{ route('return-merchandise.create') }}">Devolución de
                             Mercancía</a></li>
-              
+
                     <li>
                         <hr class="dropdown-divider">
                     </li>
@@ -26,10 +26,16 @@
                         <h6 class="dropdown-header">Gestión de Ventas</h6>
                     </li>
                     <li><a class="dropdown-item" href="{{ route('register.create') }}">Registrar Venta</a></li>
-                    <li><a class="dropdown-item" href="">Historial de Ventas</a></li>
+                    <li><a class="dropdown-item" href="">Historial de Ventas General</a></li>
+                    <li><a class="dropdown-item" href="{{ route('customer-receipt-history.index') }}">Historial de recibos del cliente</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
+
+                    <li>
+                        <h6 class="dropdown-header">Gestión de Garantías</h6>
+                    </li>
+                    <li><a class="dropdown-item" href="">Buscar Recibo de Garantía</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>
@@ -58,9 +64,12 @@
                     <li><a class="dropdown-item" href="{{ route('product.index') }}">Productos</a></li>
                     <li><a class="dropdown-item" href="{{ route('supplier.index') }}">Proveedores</a></li>
                     <li><a class="dropdown-item" href="{{ route('customer.index') }}">Clientes</a></li>
+                    
                     <li><a class="dropdown-item" href="{{ route('dollar-rate.index') }}">Tasa de Cambio (USD/BS)</a>
                     </li>
-                    <li><a class="dropdown-item" href="">Configuración IVA</a></li>
+                    <li><a class="dropdown-item" href="{{ route('business-data.index') }}">Datos del Negocio</a></li>
+                    <li><a class="dropdown-item" href="{{ route('iva-configuration.index') }}">Configuración del IVA</a></li>
+                    <li><a class="dropdown-item" href="{{ route('credit-rate-settings.index') }}">Configuración de la Tasa de Crédito</a></li>
                     <li>
                         <hr class="dropdown-divider">
                     </li>

@@ -73,20 +73,7 @@
                     <legend class="form__title"><b>Seguridad</b></legend>
 
                     <span class="form__description">Cambia tu contraseña para mantener tu cuenta segura</span>
-                    <div class="form__item">
-                        <label for="password_input" class="form__label form__label--required">Contraseña actual</label>
-                        <div class="input-group">
-                            <span class="form__icon input-group-text @error ('password') is-invalid--border @enderror"
-                                id="basic-addon1"><i class="bi bi-key"></i></span>
-                            <input type="password" name="current_password" id="password_input"
-                                class="form-control @error ('current_password') is-invalid @enderror"
-                                placeholder="Ingresa tu contraseña actual" aria-label="Contraseña actual"
-                                aria-describedby="basic-addon1">
-                        </div>
-                        @error('current_password')
-                            <div class="alert alert-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
+                  
                     <div class="form__item">
                         <label for="" class="form__label form__label--required"> Nueva contraseña </label>
                         <div class="input-group ">

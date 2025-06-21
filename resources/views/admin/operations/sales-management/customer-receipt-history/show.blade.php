@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Valor del Dólar | Sistema Web DJ</title>
+    <title>Listado de Categorías | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -32,62 +32,37 @@
     <x-header-admin></x-header-admin>
     <x-selection-operations></x-selection-operations>
     <main class="flex__grow-2 flex-full__aligh-start">
-        <article class="form w-adjustable-s">
-    <div class="flex-full__justify-content-between p-0">
-        <div>
-            <legend><b>Valor del Dólar</b></legend>
-        </div>
-        <div>
-            <a href="{{ route('dollar-rate.edit') }}" class="text-decoration-none text-white">
-                <button class="button button--color-blue">
-                    Actualizar Valor
+        <form action="{{ route('credit-rate-settings.update') }}" method="post" class="form w-adjustable-s">
+            @csrf
+            @method('PUT')
+            <legend class="form__title">
+                <b>Actualizar la Tasa de Interés del Crédito </b>
+            </legend>
+            @if (session('alert-success'))
+                <div class="alert alert-success">
+                    {{ session('alert-success') }}
+                </div>
+            @endif
+            <div class="form__item">
+                <label for="credit_rate" class="form__label form__label--required"> Tasa de Interés del Crédito </label>
+                <div class="input-group">
+                    <span class="form__icon input-group-text @error ('credit_rate') is-invalid--border @enderror"
+                        id="basic-addon1"><i class="bi bi-newspaper"></i></span>
+                    <input type="text" name="credit_rate" id="credit_rate"
+                        class="form-control @error ('credit_rate') is-invalid @enderror" placeholder="Ej: 8 (para 8%)"
+                        aria-label="Impuesto al Valor Añadido (credit_rate)" aria-describedby="basic-addon1" autofocus
+                        value="{{ $credit_rate->value ?? 0 }}">
+                </div>
+                @error('credit_rate')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="form__button w-100 my-3">
+                <button class="button button--color-blue w-100" type="submit">
+                    Guardar cambios
                 </button>
-            </a>
-        </div>
-    </div>
-    <div>
-        @if (session('alert-success'))
-            <div class="alert alert-success">
-                {{ session('alert-success') }}
             </div>
-        @endif
-        <hr>
-        <section class="flex-full__justify-content-between">
-            <div>
-                <span>
-                    Dólar (USD)
-                </span>
-            </div>
-            <div>
-                <span>1</span>
-            </div>
-        </section>
-        <hr>
-        <section class="flex-full__justify-content-between">
-            <div>
-                <span>
-                    Valor en Bolívares (VES)
-                </span>
-            </div>
-            <div>
-                <span>
-                    {{ number_format($dollar_rate->in_bs,2, ',', '.') }}
-                </span>
-            </div>
-        </section>
-        <hr>
-        <section class="text-center">
-            <i>
-                Fecha y hora de última actualización:
-            </i><br>
-            <span>
-                @php
-                @endphp
-                {{ $dollar_rate->updated_at ?? 'Aún no se ha actualizado' }}
-            </span>
-        </section>
-    </div>
-</article>
+        </form>
     </main>
 
 

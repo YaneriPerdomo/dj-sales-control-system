@@ -27,12 +27,6 @@
         <form action="{{ route('return-merchandise.store') }}" method="post" class="form w-adjustable">
             @csrf
             @method('POST')
-            <div class="button--back">
-                <a href="{{ route('supplier.index') }}">
-                    <i class="bi bi-arrow-left-square text-grey"></i> <button class="button text-grey"
-                        type="button">Volver al panel de control</button>
-                </a>
-            </div>
             <legend class="form__title">
                 <b>Devolución de Mercancía</b>
             </legend>

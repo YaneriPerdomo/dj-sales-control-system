@@ -2,14 +2,18 @@
 
 use App\Http\Controllers\AllProductsStockController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\BusinessDataController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ConfigurationAdminController;
 use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ControlPanelController;
+use App\Http\Controllers\CreditRateController;
 use App\Http\Controllers\CriticalStockController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerReceiptHistoryController;
 use App\Http\Controllers\DollarRateController;
 use App\Http\Controllers\GoodController;
+use App\Http\Controllers\IvaController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchandiseController;
@@ -18,6 +22,7 @@ use App\Http\Controllers\PurchaseHistoryController;
 use App\Http\Controllers\SalesManagementController;
 use App\Http\Controllers\StockReportController;
 use App\Http\Controllers\SupplierController;
+use App\Models\CreditRate;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(LoginController::class)->group(function () {
@@ -145,12 +150,37 @@ Route::controller(MerchandiseController::class)->group(function () {
 
 Route::controller(SalesManagementController::class)->group(function () {
     Route::get('venta/registrar', 'create')->name('register.create');
-     Route::post('venta/registrar', 'searchCurtomer')->name('register.search-card');
+    Route::post('venta/buscar-cliente', 'searchCurtomer')->name('register.search-card');
+    Route::post('venta/buscar-producto', 'searchProduct')->name('register.search-product');
 });
 
 Route::controller(PurchaseHistoryController::class)->group(function () {
     Route::get('historial-mercancias', 'index')->name('spurchase-history.index');
     Route::get('historial-mercancia/m-{id}/{statu}/mas-detalles', 'show')->name('spurchase-history.show');
 });
+
+Route::controller(BusinessDataController::class)->group(function () {
+    Route::get('datos-del-negocio', 'index')->name('business-data.index');
+    Route::put('datos-del-negocio', 'update')->name('business-data.update');
+});
+
+Route::controller(IvaController::class)->group(function () {
+    Route::get('configuration-del-iva', 'index')->name('iva-configuration.index');
+    Route::get('configuration-del-iva/editar', 'edit')->name('iva-configuration.edit');
+    Route::put('configuration-del-iva', 'update')->name('iva-configuration.update');
+});
+
+Route::controller(CreditRateController::class)->group(function () {
+    Route::get('configuration-de-la-tasa-de-credito', 'index')->name('credit-rate-settings.index');
+    Route::get('configuration-de-la-tasa-de-credito/editar', 'edit')->name('credit-rate-settings.edit');
+    Route::put('configuration-de-la-tasa-de-credito', 'update')->name('credit-rate-settings.update');
+});
+
+Route::controller(CustomerReceiptHistoryController::class)->group(function () {
+    Route::get('historial-de-recibos-garantia/buscar', 'index')->name('customer-receipt-history.index');
+    Route::get('historial-de-recibos-garantia/{codigoRecibo}/historial', 'show')->name('customer-receipt-history.show');
+   
+});
+
 
 

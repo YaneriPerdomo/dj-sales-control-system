@@ -1,10 +1,9 @@
-<!doctype html>
 <html lang="es" class="height-full">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Valor del Dólar | Sistema Web DJ</title>
+    <title>Configuration del Iva | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -33,61 +32,50 @@
     <x-selection-operations></x-selection-operations>
     <main class="flex__grow-2 flex-full__aligh-start">
         <article class="form w-adjustable-s">
-    <div class="flex-full__justify-content-between p-0">
-        <div>
-            <legend><b>Valor del Dólar</b></legend>
-        </div>
-        <div>
-            <a href="{{ route('dollar-rate.edit') }}" class="text-decoration-none text-white">
-                <button class="button button--color-blue">
-                    Actualizar Valor
-                </button>
-            </a>
-        </div>
-    </div>
-    <div>
-        @if (session('alert-success'))
-            <div class="alert alert-success">
-                {{ session('alert-success') }}
-            </div>
-        @endif
-        <hr>
-        <section class="flex-full__justify-content-between">
-            <div>
-                <span>
-                    Dólar (USD)
-                </span>
+            <div class="flex-full__justify-content-between p-0">
+                <div>
+                    <legend><b>Configuración de la Tasa de Crédito</b></legend>
+                </div>
+                <div>
+                    <a href="{{ route('credit-rate-settings.edit') }}" class="text-decoration-none text-white">
+                        <button class="button button--color-blue">
+                            Actualizar Valor
+                        </button>
+                    </a>
+                </div>
             </div>
             <div>
-                <span>1</span>
+                @if (session('alert-success'))
+                    <div class="alert alert-success">
+                        {{ session('alert-success') }}
+                    </div>
+                @endif
+                <hr>
+                <section class="flex-full__justify-content-between">
+                    <div>
+                        <span>
+                            Tasa de Interés del Crédito
+                        </span>
+                    </div>
+                    <div>
+                        <span>
+                            {{ $credit_rate->value ?? 0 }}%
+                        </span>
+                    </div>
+                </section>
+                <hr>
+                <section class="text-center">
+                    <i>
+                        Fecha y hora de última actualización:
+                    </i><br>
+                    <span>
+                        @php
+                        @endphp
+                        {{ $credit_rate->updated_at ?? 'Aún no se ha actualizado' }}
+                    </span>
+                </section>
             </div>
-        </section>
-        <hr>
-        <section class="flex-full__justify-content-between">
-            <div>
-                <span>
-                    Valor en Bolívares (VES)
-                </span>
-            </div>
-            <div>
-                <span>
-                    {{ number_format($dollar_rate->in_bs,2, ',', '.') }}
-                </span>
-            </div>
-        </section>
-        <hr>
-        <section class="text-center">
-            <i>
-                Fecha y hora de última actualización:
-            </i><br>
-            <span>
-                @php
-                @endphp
-                {{ $dollar_rate->updated_at ?? 'Aún no se ha actualizado' }}
-            </span>
-        </section>
-    </div>
-</article>
+        </article>
     </main>
 
 

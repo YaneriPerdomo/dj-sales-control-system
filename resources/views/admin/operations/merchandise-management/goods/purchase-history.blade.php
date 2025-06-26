@@ -111,13 +111,15 @@
                                 <span class="section-history__style-two"></span>
                                 <span class="section-history__style-thre"></span>
 
-                                <div class="section-history__option-more-detail">
+                                @if ($purchase['good_id'] != null || $purchase['return_merchandise_id'] != null )
+                                    <div class="section-history__option-more-detail">
                                     {{-- Enlace para ver los detalles completos de la compra --}}
                                     <a href="{{ route('spurchase-history.show', [$purchase['good_id'] ?? $purchase['return_merchandise_id'], $purchase['good_id'] == null ? 'salida' : 'entrada'])}}"
                                         class="section-history__link text-decoration-none text-white">
                                         <i>Ver más detalles</i>
                                     </a>
                                 </div>
+                                @endif
                             </div>
                 @empty
                     {{-- Mensaje a mostrar si no hay historial de compras --}}

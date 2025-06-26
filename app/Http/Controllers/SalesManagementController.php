@@ -2,29 +2,176 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BusinessData;
 use App\Models\CreditRate;
 use App\Models\Customer;
 use App\Models\DollarRate;
 use App\Models\Iva;
+use App\Models\MerchandiseHistory;
+use App\Models\PaymentType;
 use App\Models\Product;
+use App\Models\Sale;
+use App\Models\SaleDetails;
+use Barryvdh\DomPDF\Facade\Pdf;
+use DB;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use LaravelLang\Locales\Concerns\About;
+use PDOException;
+use Ramsey\Uuid\Type\Integer;
+use Session;
 
 class SalesManagementController extends Controller
 {
+     public function customerSalesHistoryShow($numberI = "")
+     {
+
+
+
+          $sales = Sale::with([
+               'paymentType' =>
+                    function ($query) {
+                         $query->select(
+                              'payment_type_id',
+                              'name'
+                         );
+                    },
+          ])->whereHas(
+                    'customer',
+                    function ($query) {
+                         $query->where('card', '31048726');
+                    },
+               )
+               ->orderBy('created_at', 'desc')
+               ->paginate(8);
+
+
+          return view(
+               'admin.operations.sales-management.customer-receipt-history.show-all'
+               ,
+               [
+                    'sales' => $sales
+               ]
+          );
+     }
+
+     public function index()
+     {
+          $sales = SaleDetails::select(
+               "sale_detail_id",
+               "sale_id",
+          )
+               ->with([
+                    'sale' =>
+                         function ($query) {
+                              $query->select(
+                                   'payment_type_id',
+                                   "sale_id",
+                                   "customer_id",
+                                   "total_price_dollars",
+                                   "status",
+                                   'sale_code',
+
+                                   "created_at",
+                                   "slug"
+                              )->with([
+                                             'paymentType' =>
+                                                  function ($query) {
+                                                       $query->select(
+                                                            'payment_type_id',
+                                                            'name'
+                                                       );
+                                                  },
+                                        ])
+                                   ->with([
+                                        'customer' =>
+                                             function ($query) {
+                                                  $query->select(
+                                                       'customer_id',
+                                                       'name',
+                                                       'lastname',
+                                                       'card'
+                                                  );
+                                             },
+                                   ]);
+                         }
+               ])->orderBy('created_at', 'desc')
+               ->paginate(8);
+
+
+
+          return view(
+               'admin.operations.sales-management.general-history.show-all'
+               ,
+               [
+                    'sales' => $sales
+               ]
+          );
+     }
+
+     public function saleSeeDetails($slug)
+     {
+
+          $sale = Sale::where('slug', $slug)
+               ->with([
+                    'paymentType' =>
+                         function ($query) {
+                              $query->select(
+                                   'payment_type_id',
+                                   'name'
+                              );
+                         },
+               ])
+               ->with([
+                    'customer' =>
+                         function ($query) {
+                              $query->select(
+                                   'customer_id',
+                                   'name',
+                                   'lastname',
+                                   'card'
+                              );
+                         },
+               ])->first();
+
+          $sale_details = SaleDetails::with([
+               'products' => function ($query) {
+                    $query->select('product_id', 'name');
+               }
+          ])->where('sale_id', $sale->sale_id)->first();
+
+          return view(
+               'admin.operations.sales-management.general-history.show-more-details',
+               [
+                    'sale' => $sale,
+                    "sale_details" => $sale_details
+               ]
+          );
+
+     }
      public function create()
      {
           //Record customer sale
           $bs = DollarRate::select('in_bs')->first();
           $iva = Iva::select('iva')->first();
           $credit_rate = CreditRate::select('value')->first();
-         
+          $payment_types = PaymentType::all();
           return view(
                'admin.operations.sales-management.register',
                [
                     'iva' => $iva,
-                    'bs' => $bs, 
-                    'credit_rate' => $credit_rate
+                    'bs' => $bs,
+                    'credit_rate' => $credit_rate,
+                    "payment_types" => $payment_types
                ]
+          );
+     }
+
+     public function customerSalesHistory()
+     {
+          return view(
+               'admin.operations.sales-management.customer-receipt-history.search'
           );
      }
 
@@ -46,7 +193,7 @@ class SalesManagementController extends Controller
           if ($request->name_product == "") {
                return response(['customer' => false])->header('Content-type', 'aplication/json');
           }
-          $customer = Product::select('name', 'code', 'price_dollar', 'sale_profit_percentage', 'discount_only_dollar', 'description')
+          $customer = Product::select('name', 'code', 'product_id', 'price_dollar', 'sale_profit_percentage', 'discount_only_dollar', 'description')
                ->whereLike('name', '%' . $request->name_product . '%')->get();
 
 
@@ -55,6 +202,196 @@ class SalesManagementController extends Controller
           } else {
                return response(['customer' => false])->header('Content-type', 'aplication/json');
 
+          }
+     }
+
+     public function store(Request $request)
+     {
+
+          try {
+               if ($request->cliente_id == null) {
+                    // (ERROR 400)Error de base de datos :  No se puede proceder a la operacion debido a que la enviada al servico incompleta
+                    return redirect()->back()->with('alert-danger', 'Error 400 (Solicitud incorrecta): No se pudo completar la operación porque el cliente no está seleccionado.');
+               }
+
+               if (!$request->has('name_1')) {
+                    return redirect()->back()
+                         ->with('alert-danger', 'Error 400 (Solicitud incorrecta): No se pudo completar la operación porque no se seleccionó ningún producto para la venta del cliente.');
+               }
+
+               DB::beginTransaction();
+               $register_sale = new Sale();
+               $slug = converter_slug($request->numero_comprobante);
+               $register_sale->slug = 'n-' . $slug;
+               $register_sale->customer_id = $request->cliente_id;
+               $register_sale->sale_code = $request->numero_comprobante;
+               $register_sale->payment_type_id = $request->metodo_pago;
+               $register_sale->total_price_dollars = floatval(str_replace(',', '.', $request->total_a_pagar));
+               $register_sale->exchange_rate_bs = floatval(str_replace(',', '.', $request->bs));
+               $register_sale->credit_rate = $request->tasa_credito_actual;
+               $register_sale->tax_base = floatval(str_replace(',', '.', $request->base_imponible));
+               $register_sale->VAT = $request->iva_actual;//El numero que se tomo el cuenta para el iva;
+               $register_sale->VAT_tax_dollars = floatval(str_replace(',', '.', $request->iva)); //Iva total de la cuenta;
+               $register_sale->status = 'Completada';
+               $register_sale->expiration_date = $request->fecha_vencimiento;
+               $register_sale->remarks = $request->observaciones;
+               $register_sale->credit_tax_dollars = floatval(str_replace(',', '.', $request->tasa_credito));
+
+               $register_sale->save();
+
+               $itemNames = 0;
+
+
+
+               $requestData = $request->except([
+                    "_method",
+                    "_token",
+                    "base_imponible",
+                    "iva",
+                    "iva_actual",
+                    "tasa_credito",
+                    "total_a_pagar",
+                    "bs",
+                    "cliente_id",
+                    "numero_comprobante",
+                    "metodo_pago",
+                    "fecha_vencimiento",
+                    "observaciones",
+                    "generar_comprobante_pdf",
+                    "tasa_credito_actual"
+               ]);
+               foreach ($requestData as $value) {
+                    $itemNames++;
+               }
+
+               $numberOfItems = $itemNames / 6;
+               $sum = 0;
+
+               for ($i = 1; $i <= $numberOfItems; $i++) {
+                    $productNameKey = 'name_' . $i;
+                    $productQuantityKey = 'quantity_' . $i;
+                    $productIdKey = 'id_' . $i;
+                    $productUnitCostDollarsKey = 'sale_price_usd_' . $i;
+                    $productDiscountKey = 'discount_' . $i;
+                    $productTotalParcialUsdKey = 'total_parcial_usd_' . $i;
+                    if (
+                         isset($requestData[$productNameKey]) && isset($requestData[$productQuantityKey]) && isset($requestData[$productIdKey])
+
+                    ) {
+                         $productId = $requestData[$productIdKey];
+                         $productAmount = $requestData[$productQuantityKey];
+                         $productUnitCostDollars = $requestData[$productUnitCostDollarsKey];
+                         $productDiscount = str_replace('%', '', $requestData[$productDiscountKey]);
+
+                         $productTotalParcialUsd = $requestData[$productTotalParcialUsdKey];
+                         $sum = $sum + $productAmount;
+                         SaleDetails::create([
+                              'sale_id' => $register_sale->sale_id,
+                              'product_id' => $productId,
+                              'quantity' => $productAmount,
+                              'unit_cost_dollars' => floatval(str_replace(',', '.', $productUnitCostDollars)),
+                              'subtotal_dollars' => floatval(str_replace(',', '.', $productTotalParcialUsd)),
+                              'discount' => $productDiscount
+                         ]);
+
+                         $productToUpdate = Product::where('product_id', $productId)->first();
+                         $saleCountStock = $productToUpdate->stock_available;
+                         if ($saleCountStock <= 0) {
+                              DB::rollBack();
+                              $nameProduct = $requestData[$productNameKey];
+                              return redirect()->back()->with(
+                                   'alert-danger',
+                                   'Error 409 (Conflicto): No podemos procesar la operacion. El producto con la siguiente descripción "' . $nameProduct . '" no tiene suficiente stock disponible. '
+                              );
+                         }
+                         if ($productToUpdate) {
+
+                              $productToUpdate->stock_available -= $productAmount;
+                              $productToUpdate->save();
+
+
+                         } else {
+                              DB::rollBack();
+                              abort(404, "Producto con ID {$productId} no encontrado durante la actualización de stock");
+                         }
+                    } else {
+                         DB::rollBack();
+                         abort(400, 'Error: Faltan datos para uno o más productos (Error por parte del cliente). Asegúrate de que todos los campos "name_", "quantity_" e "id_" estén presentes y correctos.');
+                    }
+               }
+
+               $singular_or_plural = $sum == 1 ? 'unidad' : 'unidades';
+               $singular_or_plural_product = $numberOfItems == 1 ? 'tipo producto' : 'tipos productos';
+               $client = Customer::where('customer_id', $request->cliente_id)->first();
+               $msgClient = "";
+               if ($client->gender_id == 1) {
+                    $msgClient = 'el cliente llamado ' . $client->name . ' ' . $client->lastname;
+               } else {
+                    $msgClient = 'la clienta llamada ' . $client->name . ' ' . $client->lastname;
+               }
+
+               MerchandiseHistory::create([
+                    'message' => '<b>Salida: </b> Egreso  de ' . $numberOfItems . ' ' . $singular_or_plural_product . ', sumando ' . $sum . ' ' . $singular_or_plural . ' en total por ' . $msgClient,
+               ]);
+
+               DB::commit();
+
+               if ($request->generar_comprobante_pdf == 'Solo Generar Venta') {
+                    return redirect('venta/registrar')->with("alert-success-sale", "¡Transacción de venta completada! Se ha registrado la transacción del cliente.");
+               }
+
+
+               $sale_id = $register_sale->sale_id;
+
+               $sale_details = SaleDetails::select('quantity', 'product_id', 'subtotal_dollars', 'unit_cost_dollars', 'discount')
+                    ->with([
+                         'products' => function ($query) {
+                              $query->select('product_id', 'name');
+                         }
+                    ])->where('sale_id', $sale_id)->get();
+               $sale = Sale::with([
+                    "customer" => function ($query) {
+                         $query->select('customer_id', 'name', 'lastname', 'identity_card_id', 'card', 'phone', 'address')
+                         ;
+                    }
+               ])->where('sale_id', $sale_id)->first();
+
+               $business_data = BusinessData::first();
+
+               $pdf = Pdf::loadView(
+                    "admin.operations.sales-management.sale-receipt",
+                    ['business_data' => $business_data, 'sale' => $sale, 'sale_details' => $sale_details]
+               );
+
+               //Session::flash("alert-success-sale", "Recibo y Detalles de la Venta Descargados del cliente. ¡Operación completada!");
+
+               return $pdf->download('Recibo-de-' . $sale['customer']['name'] . '-' . $sale['customer']['lastname'] . '-' . Date('d-m-Y') . '.pdf');
+
+
+          } catch (QueryException $ex) {
+
+               DB::rollBack();
+
+               echo $ex->getMessage();
+
+               // return redirect()->back()->with('alert-danger', 'Error de base de datos: No se pudo completar la operación. Por favor, inténtalo de nuevo o contacta al soporte (A la Ing.Yaneri Perdomo Barrios).');
+
+          } catch (PDOException $ex) {
+
+               DB::rollBack();
+
+               \Log::error('PDOException al procesar entrada de mercancía: ' . $ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
+
+               return redirect()->back()->with('alert-danger', 'Error de conexión a la base de datos. Por favor, inténtalo de nuevo más tarde.');
+
+          } catch (Exception $ex) {
+
+               DB::rollBack();
+
+               \Log::error('Excepción general al procesar entrada de mercancía: ' . $ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
+
+               echo $ex->getMessage();
+               // redirect()->back()->with('alert-danger', 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.');
           }
      }
 }

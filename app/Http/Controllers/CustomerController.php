@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\IdentityCard;
+use DB;
 use Illuminate\Http\Request;
+use PDOException;
 
 class CustomerController extends Controller
 {
@@ -34,6 +36,39 @@ class CustomerController extends Controller
         );
     }
 
+
+    public function create()
+    {
+        return view(
+            "admin.catalogs.master-data.customers.create",
+
+        );
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $customer = new Customer();
+            $slug = converter_slug($request->customer_name
+                . ' ' . $request->customer_lastname, $request->card);
+            $customer->name = $request->customer_name;
+            $customer->lastname = $request->customer_lastname;
+            $customer->gender_id = $request->gender_id;
+            $customer->identity_card_id = $request->identity_card_id;
+            $customer->card = $request->card;
+            $customer->phone = $request->telephone_number;
+            $customer->address = $request->address;
+            $customer->slug = $slug;
+            $customer->save();
+            $message = $request->gender_id == 1 ? "El cliente ha sido registrado" : "La cliente ha sido registrada";
+            DB::commit();
+            return redirect('clientes')->with("alert-success", $message . " con éxito.");
+        } catch (PDOException $ex) {
+            DB::rollBack();
+            return $ex->getMessage();
+        }
+    }
     public function edit($slug)
     {
         $customer = Customer::where('slug', $slug)->first();
@@ -59,19 +94,14 @@ class CustomerController extends Controller
         $customer->slug = 123;
         $customer->save();
 
-        if ($request->identity_card_id != 3) {
-            $new_slug = converter_slug($request->customer_name
-                . ' ' . $request->customer_lastname, $request->card);
-            $customer->slug = $new_slug;
-              $customer->save();
-        } else {
-            $new_slug = converter_slug($request->customer_name
-                . ' ' . $request->customer_lastname, $customer->customer_id);
-            $customer->slug = $new_slug;
-            $customer->save();
-        }
+        $new_slug = converter_slug($request->customer_name
+            . ' ' . $request->customer_lastname, $request->card);
+        $customer->slug = $new_slug;
+        $customer->save();
 
-        return $customer;
+        $message = $request->gender_id == 1 ? "El cliente ha sido actualizado" : "La cliente ha sido actualizada";
+        DB::commit();
+        return redirect('cliente/'.$new_slug.'/editar')->with("alert-success", $message . " con éxito.");
     }
 
 }

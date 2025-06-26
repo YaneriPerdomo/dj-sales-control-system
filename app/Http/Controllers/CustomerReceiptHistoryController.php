@@ -14,6 +14,6 @@ class CustomerReceiptHistoryController extends Controller
     public function show($codigoRecibo){
 
         return $codigoRecibo;
-        return view('admin.operations.sales-management.customer-receipt-history.show');
+        return view('admin.operations.warranty-management.search');
     }
 }

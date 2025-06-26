@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id('good_id');
 
             $table->timestamp('created_at')->useCurrent();
-            $table->text('description');
+            $table->text('description')->nullable();
         });
     }
 

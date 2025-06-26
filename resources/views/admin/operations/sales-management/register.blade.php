@@ -68,30 +68,60 @@
             <div>
                 @csrf
                 <input type="hidden" name="id_customer">
-                
+
             </div>
 
             <h1 class="fs-3">
                 <b>Registrar Nueva Venta</b>
             </h1>
-            <div style="display: flex; justify-content: center; align-items: center; gap:1rem">
-                <label for="option-1">
-                    <input type="radio" name="generate_invoice" id="option-1" checked>
+            @if (session('alert-success-sale'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('alert-success-sale') }}
+                </div>
+            @endif
+            @if (session('alert-danger'))
+                <div class="alert alert-danger" role="alert">
+                    {{ session('alert-danger') }}
+                </div>
+            @endif
+
+
+           <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+                <label for="option-1" class="form-check-label">
+                    <input type="radio" name="generate_invoice" id="option-1" value="0" checked
+                        class="form-check-input">
                     <span>Generar Venta y Descargar comprobante</span>
                 </label>
 
-                <label for="option-2">
-                    <input type="radio" name="generate_invoice" id="option-2">
+                <label for="option-2" class="form-check-label">
+                    <input type="radio" name="generate_invoice" id="option-2" value="1" class="form-check-input">
                     <span>Solo Generar Venta</span>
                 </label>
             </div>
 
+            <script>
+                let generate_invoice = document.querySelectorAll('[name="generate_invoice"]');
+
+                document.addEventListener('click', e => {
+                    if (e.target.matches('[name="generate_invoice"]')) {
+                        generate_invoice.forEach(element => {
+                            element.removeAttribute('checkbox');
+                        });
+                        generate_invoice.forEach(element => {
+                            if (element.value === e.target.value) {
+                                element.setAttribute('checkbox', true);
+                            }
+                        });
+                        console.info(e.target.value)
+                    }
+                })
+            </script>
             <form id="register_sale">
                 <section>
                     <h2 class="fs-4">Comprobante de Pago</h2>
                     <div class="row">
                         <div class="col-4">
-                            <label for="receipt_number" class="form__label">Número de Factura</label>
+                            <label for="receipt_number" class="form__label">Número del Recibo</label>
                             <div class="input-group">
                                 <span
                                     class="form__icon input-group-text @error ('product_id') is-invalid--border @enderror"
@@ -113,11 +143,9 @@
                                 <select class="form-select" name="payment-method" id="payment-method"
                                     aria-label="Seleccione el método de pago">
                                     <option value="" selected disabled>Seleccione una opción de pago</option>
-                                    <option value="punto_de_venta_debito">Punto de Venta (Débito)</option>
-                                    <option value="punto_de_venta_credito">Punto de Venta (Crédito)</option>
-                                    <option value="divisas">Divisas</option>
-                                    <option value="bolivares">Bolívares (Efectivo/Transferencia)</option>
-                                    <option value="mixto">Mixto (Combinación de métodos)</option>
+                                    @foreach ($payment_types as $value)
+                                        <option value="{{ $value['payment_type_id'] }}">{{$value['name']}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -132,16 +160,17 @@
                         </div>
                     </div>
                     <div class="form__item">
-                        <label for="note" class="form__label">Observaciones</label>
+                        <label for="observations" class="form__label">Observaciones</label>
                         <div class="input-group">
-                            <span class="form__icon input-group-text @error('note') is-invalid--border @enderror"
-                                id="note-addon">
+                            <span
+                                class="form__icon input-group-text @error('observations') is-invalid--border @enderror"
+                                id="observations-addon">
                                 <i class="bi bi-chat-dots"></i>
                             </span>
-                            <textarea name="note" id="note" rows="3"
-                                class="form-control @error('note') is-invalid @enderror"
+                            <textarea name="observations" id="observations" rows="3"
+                                class="form-control @error('observations') is-invalid @enderror"
                                 placeholder="Breve descripción del comprobante..."
-                                aria-label="Observaciones">{{ old('note') }}</textarea>
+                                aria-label="Observaciones">{{ old('observations') }}</textarea>
                         </div>
                     </div>
                 </section>
@@ -172,7 +201,7 @@
                 <div class="register-client text-red" style="display:none">
                     <p class="p-0 m-0" role="alert">
                         Cliente no encontrado. Por favor, regístralo.
-                        <a href="" class="text-blue">Aquí</a>
+                        <a href="{{ route('customer.create') }}" class="text-blue">Aquí</a>
                     </p>
                 </div>
 
@@ -183,6 +212,7 @@
                 @endif
 
                 <fieldset>
+                    <input type="hidden" name="id_customer">
                     <div class="form__item row">
                         <div class="col-4">
                             <div class="form__item">
@@ -195,8 +225,7 @@
                                     </span>
                                     <input type="text" name="client_name" id="client_name"
                                         class="form-control @error('client_name') is-invalid @enderror"
-                                        placeholder="..." aria-label="Nombre del cliente"
-                                        value="{{ old('client_name') }}" disabled>
+                                        placeholder="..." aria-label="Nombre del cliente" value="" disabled>
                                 </div>
                                 @error('client_name') <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -213,8 +242,7 @@
                                     </span>
                                     <input type="text" name="client_lastname" id="client_lastname"
                                         class="form-control @error('client_lastname') is-invalid @enderror"
-                                        placeholder="..." aria-label="Apellido del cliente"
-                                        value="{{ old('client_lastname') }}" disabled>
+                                        placeholder="..." aria-label="Apellido del cliente" value="" disabled>
                                 </div>
                                 @error('client_lastname') <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -231,8 +259,7 @@
                                     </span>
                                     <input type="text" name="client_phone" id="client_phone"
                                         class="form-control @error('client_phone') is-invalid @enderror"
-                                        placeholder="..." aria-label="Número de teléfono del cliente"
-                                        value="{{ old('client_phone') }}" disabled>
+                                        placeholder="..." aria-label="Número de teléfono del cliente" value="" disabled>
                                 </div>
                                 @error('client_phone') <div class="alert alert-danger mt-1">{{ $message }}</div>
                                 @enderror
@@ -250,7 +277,7 @@
                             </span>
                             <textarea name="client_address" id="client_address" rows="3" disabled
                                 class="form-control @error('client_address') is-invalid @enderror" placeholder="..."
-                                aria-label="Dirección del cliente">{{ old('client_address') }}</textarea>
+                                aria-label="Dirección del cliente"></textarea>
                         </div>
                         @error('client_address') <div class="alert alert-danger mt-1">{{ $message }}</div> @enderror
                     </div>
@@ -270,7 +297,7 @@
                     <div class="row mt-2 mb-0">
                         <div class="col-6">
                             <label for="name_product" class="form__label form__label--required">
-                                Buscador del Producto
+                                Buscador del producto
                             </label>
                             <div class="input-group">
                                 <span class="form__icon input-group-text"><i class="bi bi-search"></i></span>
@@ -287,7 +314,7 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <label for="products" class="form__label form__label--required">Productos</label>
+                            <label for="products" class="form__label">Productos a vender</label>
                             <div class="input-group">
                                 <span
                                     class="form__icon input-group-text @error ('products') is-invalid--border @enderror"
@@ -303,54 +330,71 @@
                     </div>
                 </form>
 
-                <section class='table' data-count='0'>
-                    <div class="table-responsive">
-                        <table class='dataTable'>
-                            <thead>
-                                <tr>
-                                    <th>Descripción del producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio Unitario <br> Divisas</th>
-                                    <th>Descuento</th>
-                                    <th>Total Neto <br>Divisas</th>
-                                    <th>Operación</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-insert">
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-                <section class="flex-full__justify-content-center">
-                    <div class="summary">
-                        <span class="summary__title">RESUMEN</span>
-                        <div class="summary__content">
-                            <div class="summary__block summary__calculation">
-                                <span>BASE IMPONIBLE</span>
-                                <span>0</span>
-                            </div>
-                            <div class="summary__block summary__calculation summary__calculation--iva"
-                                data-iva="{{ number_format($iva->iva / 100, 2)}}">
-                                <span>IVA ({{ $iva->iva }}%)</span>
-                                <span>0</span>
-                            </div>
-                            <div class="summary__block summary__calculation summary__calculation--credit-rate"
-                                data-credit-rate="{{  number_format($credit_rate->value / 100, 2) }}">
-                                <span>TASA DE INTERÉS ({{ $credit_rate->value }}%)</span>
-                                <span>0</span>
-                            </div>
-                            <div class="summary__block summary__calculation">
-                                <span>TOTAL A PAGAR</span>
-                                <span>0</span>
+                <form action="{{ route('register.store') }}" method="post" class="form__sale-register">
+                    @csrf
+                    @method('POST')
+                    <input type="hidden" name="base_imponible">
+                    <input type="hidden" name="iva">
+                    <input type="hidden" name="iva_actual">
+                    <input type="hidden" name="tasa_credito">
+                    <input type="hidden" name="total_a_pagar">
+                    <input type="hidden" name="bs">
+                    <input type="hidden" name="cliente_id">
+                    <input type="hidden" name="numero_comprobante">
+                    <input type="hidden" name="metodo_pago">
+                    <input type="hidden" name="fecha_vencimiento">
+                    <input type="hidden" name="observaciones">
+                    <input type="hidden" name="generar_comprobante_pdf" value="Generar Venta y Descargar comprobante">
+                    <input type="hidden" name="tasa_credito_actual">
+                    <section class='table' data-count='0'>
+                        <div class="table-responsive">
+                            <table class='dataTable'>
+                                <thead>
+                                    <tr>
+                                        <th>Descripción del producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unitario <br> Divisas</th>
+                                        <th>Descuento</th>
+                                        <th>Total Neto <br>Divisas</th>
+                                        <th>Operación</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-insert">
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                    <section class="flex-full__justify-content-center">
+                        <div class="summary">
+                            <span class="summary__title">RESUMEN</span>
+                            <div class="summary__content">
+                                <div class="summary__block summary__calculation">
+                                    <span>BASE IMPONIBLE</span>
+                                    <span>0</span>
+                                </div>
+                                <div class="summary__block summary__calculation summary__calculation--iva"
+                                    data-iva="{{ number_format($iva->iva / 100, 2)}}">
+                                    <span>IVA ({{ $iva->iva }}%)</span>
+                                    <span>0</span>
+                                </div>
+                                <div class="summary__block summary__calculation summary__calculation--credit-rate"
+                                    data-credit-rate="{{  number_format($credit_rate->value / 100, 2) }}">
+                                    <span>TASA DE INTERÉS ({{ $credit_rate->value }}%)</span>
+                                    <span>0</span>
+                                </div>
+                                <div class="summary__block summary__calculation">
+                                    <span>TOTAL A PAGAR</span>
+                                    <span>0</span>
+                                </div>
                             </div>
                         </div>
+                    </section>
+                    <div class="form__button w-100 my-3">
+                        <button class="button button--color-blue w-100" type="submit">
+                            Guardar cambios
+                        </button>
                     </div>
-                </section>
-                <div class="form__button w-100 my-3">
-                    <button class="button button--color-blue w-100" type="submit" form="register_sale">
-                        Guardar cambios
-                    </button>
-                </div>
+                </form>
             </section>
         </article>
 
@@ -363,9 +407,79 @@
         crossorigin="anonymous"></script>
 </body>
 <script>
+
+
     document.addEventListener('DOMContentLoaded', function () {
 
-        // src/app.js
+        const saleRegisterForm = document.querySelector('.form__sale-register');
+
+        if (saleRegisterForm) {
+            saleRegisterForm.addEventListener('submit', async e => {
+                e.preventDefault(); // Prevent default form submission
+
+                // --- Select form elements ---
+                const baseImponibleInput = document.querySelector('[name="base_imponible"]');
+                const ivaInput = document.querySelector('[name="iva"]');
+                const tasaCreditoInput = document.querySelector('[name="tasa_credito"]');
+                const totalPagarInput = document.querySelector('[name="total_a_pagar"]');
+                const clientIdInput = document.querySelector('[name="id_customer"]');
+                const clienteIdHiddenInput = document.querySelector('[name="cliente_id"]');
+                const paymentMethodSelect = document.querySelector('[name="payment-method"]');
+                const metodoPagoHiddenInput = document.querySelector('[name="metodo_pago"]');
+                const observationsInput = document.querySelector('[name="observations"]');
+                const observacionesHiddenInput = document.querySelector('[name="observaciones"]');
+                const expirationDateInput = document.querySelector('[name="expiration_date"]');
+                const fechaVencimientoHiddenInput = document.querySelector('[name="fecha_vencimiento"]');
+                const productsDollarValueElement = document.querySelector('#products'); // Assuming this holds data-bs
+                const valorBsHiddenInput = document.querySelector('[name="bs"]');
+                const receiptNumberInput = document.querySelector('[name="receipt_number"]');
+                const numeroComprobanteHiddenInput = document.querySelector('[name="numero_comprobante"]');
+                const generateInvoiceCheckbox = document.querySelector('[name="generate_invoice"]'); // Assuming it's a checkbox or has a value
+                const generarComprobantePdfHiddenInput = document.querySelector('[name="generar_comprobante_pdf"]');
+
+                const currentCreditRate = document.querySelector('.summary__calculation--credit-rate');
+                const currentCreditRateInput = document.querySelector('[name="tasa_credito_actual"]')
+
+
+                currentIva = document.querySelector('.summary__calculation--iva');
+                const CurrentIvaInput = document.querySelector('[name="iva_actual"]');
+                // --- Select summary elements ---
+                const summaryCalculationSpans = document.querySelectorAll('.summary__calculation > span');
+
+                // --- Assign values to hidden/summary fields ---
+                if (summaryCalculationSpans.length >= 8) { // Ensure all expected spans are present
+                    baseImponibleInput.value = summaryCalculationSpans[1].textContent;
+                    ivaInput.value = summaryCalculationSpans[3].textContent ?? '0'; // Use '0' string for consistency
+                    tasaCreditoInput.value = summaryCalculationSpans[5].textContent;
+                    totalPagarInput.value = summaryCalculationSpans[7].textContent;
+
+                } else {
+                    console.warn('Warning: Not enough summary calculation spans found. Check HTML structure.');
+                }
+
+                CurrentIvaInput.value = parseFloat(currentIva.getAttribute('data-iva')) * 100;
+
+                currentCreditRateInput.value = parseFloat(currentCreditRate.getAttribute('data-credit-rate')) * 100;
+
+
+                clienteIdHiddenInput.value = clientIdInput.value ?? '0'; // Use '0' string for consistency
+                metodoPagoHiddenInput.value = paymentMethodSelect.value;
+                observacionesHiddenInput.value = observationsInput.value;
+                fechaVencimientoHiddenInput.value = expirationDateInput.value;
+                valorBsHiddenInput.value = productsDollarValueElement ? productsDollarValueElement.getAttribute('data-bs') : '0';
+                numeroComprobanteHiddenInput.value = receiptNumberInput.value;
+                generarComprobantePdfHiddenInput.value = generateInvoiceCheckbox.getAttribute('checkbox') != null ? ' Generar Venta y Descargar comprobante' : ' Solo Generar Venta'; // Assign the value from the generate_invoice element
+
+                console.clear()
+
+                console.info(generarComprobantePdfHiddenInput.value);
+
+                e.target.submit();
+
+            });
+        } else {
+            console.error('Error: Sale registration form not found. Check the selector ".form__sale-register".');
+        }
 
         function generarCadenaAleatoria(longitud) {
             let resultado = '';
@@ -518,35 +632,14 @@
                 }
                 msg_registration_found_product.style.display = 'none';
                 SelectProducts.innerHTML = ' <option selected disabled>Seleccione una opción</option>';
-                /*
-                  function generate_cost_sale(cost_price, profit_margin, discount = 0, bs = 0) {
-                    let porcentaje_ganancia_decimal = profit_margin / 100;
-                    let monto_ganancia_dolares = cost_price * porcentaje_ganancia_decimal;
-                    let precio_venta_inicial = cost_price + monto_ganancia_dolares;
-                    if (discount) {
-                        let porcentaje_descuento_decimal = discount / 100;
-                        let monto_descuento_dolares = precio_venta_inicial * porcentaje_descuento_decimal;
-                        let precio_final_dolares_calculado = precio_venta_inicial - monto_descuento_dolares;
-                        let precio_final_dolares_formateado = precio_final_dolares_calculado.toLocaleString('es-ES' ,{ style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        let precio_final_bolivares_calculado = precio_final_dolares_calculado * bs;
-                        let precio_final_bolivares_formateado =  precio_final_bolivares_calculado.toLocaleString('es-ES' ,{ style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        return ''  + precio_final_dolares_formateado.
-                        '<br> BS:'+ precio_final_bolivares_formateado;
-                    } else {
-                        let precio_venta_dolares_formateado = precio_venta_inicial.toLocaleString('es-ES' ,{ style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        let precio_venta_bolivares_calculado = precio_venta_inicial * $bs;
-                        let precio_venta_bolivares_formateado = precio_venta_bolivares_calculado.toLocaleString('es-ES' ,{ style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                        return '' + precio_venta_dolares_formateado.
-                        '<br> BS:' + precio_venta_bolivares_formateado;
-                    }
-                }
 
 
-                */
+
+
                 htmlResponse.forEach(element => {
                     let option = document.createElement('option');
                     option.textContent = element['name'];
-                    option.value = element['code'];
+                    option.value = element['product_id'];
 
                     option.setAttribute('data-price-dollar', element['price_dollar']);
                     option.setAttribute('data-profit-margin', element['sale_profit_percentage'])
@@ -578,6 +671,7 @@
     let ItemTable = document.querySelector('.table');
     itemSelect.addEventListener('change', async e => {
 
+        console.info('agregando un nueov producto')
         let selectedOptionText = e.target.selectedOptions[0].textContent;
         let selectedOption = e.target.selectedOptions[0];
         if (selectedOptionText.disabled) {
@@ -910,7 +1004,7 @@
         let tax_base = summary__calculationSpan[1];
         let payment_method = document.querySelector('#payment-method');
 
-        if (payment_method.value === "punto_de_venta_credito") {
+        if (payment_method.value === "1") {
             let creditRate = parseFloat(document.querySelector('.summary__calculation--credit-rate').getAttribute('data-credit-rate')).toFixed(2)
 
             let credit_interest_rate_usd = totalUsdBeforeIva * creditRate;
@@ -938,7 +1032,7 @@
                     <i>BS: ${formatted(total_Bs)}</i>
                 `;
 
-        
+
         console.info(ivaRate + ' -> IVA')
     })
 
@@ -1132,7 +1226,7 @@
             let tax_base = summary__calculationSpan[1];
             let payment_method = document.querySelector('#payment-method');
 
-            if (payment_method.value === "punto_de_venta_credito") {
+            if (payment_method.value === "1") {
                 let creditRate = parseFloat(document.querySelector('.summary__calculation--credit-rate').getAttribute('data-credit-rate')).toFixed(2)
 
                 let credit_interest_rate_usd = totalUsdBeforeIva * creditRate;
@@ -1298,7 +1392,7 @@
             let tax_base = summary__calculationSpan[1];
             let payment_method = document.querySelector('#payment-method');
 
-            if (payment_method.value === "punto_de_venta_credito") {
+            if (payment_method.value === "1") {
                 let creditRate = parseFloat(document.querySelector('.summary__calculation--credit-rate').getAttribute('data-credit-rate')).toFixed(2)
 
                 let credit_interest_rate_usd = totalUsdBeforeIva * creditRate;
@@ -1459,7 +1553,7 @@
             let tax_base = summary__calculationSpan[1];
             let payment_method = document.querySelector('#payment-method');
 
-            if (payment_method.value === "punto_de_venta_credito") {
+            if (payment_method.value === "1") {
                 let creditRate = parseFloat(document.querySelector('.summary__calculation--credit-rate').getAttribute('data-credit-rate')).toFixed(2)
 
                 let credit_interest_rate_usd = totalUsdBeforeIva * creditRate;

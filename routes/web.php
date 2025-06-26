@@ -22,6 +22,7 @@ use App\Http\Controllers\PurchaseHistoryController;
 use App\Http\Controllers\SalesManagementController;
 use App\Http\Controllers\StockReportController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\WarrantyManagementController;
 use App\Models\CreditRate;
 use Illuminate\Support\Facades\Route;
 
@@ -128,6 +129,8 @@ Route::controller(StockReportController::class)->group(function () {
 
 Route::controller(CustomerController::class)->group(function () {
     Route::get('clientes', 'index')->name('customer.index');
+    Route::get('cliente/registrar', 'create')->name('customer.create');
+    Route::post('clientes', 'store')->name('customer.store');
     Route::get('cliente/{slug}/editar', 'edit')->name('customer.edit');
     Route::put('cliente/{slug}/editar', 'update')->name('customer.update');
 });
@@ -149,8 +152,12 @@ Route::controller(MerchandiseController::class)->group(function () {
 });
 
 Route::controller(SalesManagementController::class)->group(function () {
-    Route::get('venta/registrar', 'create')->name('register.create');
+    Route::get('historial-de-ventas-general', 'index')->name('general-history-sale.index');
+    Route::get('registrar-venta', 'create')->name('register.create');
+    Route::get('historial-ventas-general/{codeSale}/ver-detalles', 'saleSeeDetails')->name('sale.see-details');
+    Route::post('venta-registrar', 'store')->name('register.store');
     Route::post('venta/buscar-cliente', 'searchCurtomer')->name('register.search-card');
+    Route::post('venta/buscar-producto', 'searchProduct')->name('register.search-product');
     Route::post('venta/buscar-producto', 'searchProduct')->name('register.search-product');
 });
 
@@ -177,10 +184,18 @@ Route::controller(CreditRateController::class)->group(function () {
 });
 
 Route::controller(CustomerReceiptHistoryController::class)->group(function () {
-    Route::get('historial-de-recibos-garantia/buscar', 'index')->name('customer-receipt-history.index');
-    Route::get('historial-de-recibos-garantia/{codigoRecibo}/historial', 'show')->name('customer-receipt-history.show');
-   
+    Route::get('historial-de-ventas-garantia', 'index')->name('customer-receipt-history.index');
+    Route::get('historial-de-ventas-garantia/{cedula}/mostrar', 'show')->name('customer-receipt-history.show');
 });
+
+Route::controller(WarrantyManagementController::class)->group(function () {
+    Route::get('productos-con-garantias-valida', 'index')->name('customer-receipt-history.index');
+    Route::get('seguimiento-de-ventas-y-garantias/paso-1', 'searchForSale')->name('warranty-sale.search-for-sale');
+    Route::post('seguimiento-de-ventas-y-garantias/paso-1', 'checkStatusSale')->name('warranty-sale.search-for-sale');
+    Route::post('seguimiento-de-ventas-y-garantias/paso-2', 'changeProductStatus')->name('warranty-sale.change-product-status');
+    
+});
+
 
 
 

@@ -112,12 +112,12 @@
                                         </td>
                                         <td>{{substr($value->created_at, 0, 10)}}</td>
                                         <td class='table__operations'>
-                                            <a href="{{ route('product.delete', $value->slug)}}">
+                                            <a href="{{ route('product.delete', $value->slug ?? false)}}">
                                                 <button type="button" class="button button--color-red ">
                                                     <i class='bi bi-trash''></i>
                                                             </button>
                                                     </a>
-                                                    <a href="{{ route('customer.edit', $value->slug)}}">
+                                                    <a href="{{ route('customer.edit', $value->slug ?? false)}}">
                                                         <button class="button button--color-orange">
                                                             <i class="bi bi-pencil-square"></i>
                                                          </button>

@@ -92,7 +92,7 @@
                                 <th> Ubicación del producto </th>
                                 <th> Stock actual </th>
 
-                                <th>Operacion</th>
+                               
                             </tr>
                         </thead>
                         <tbody>
@@ -168,13 +168,7 @@
                                             {{ $value->stock_available }}
                                         </td>
                                         </td>
-                                        <td class='table__operations'>
-                                            <a href="{{ route('all-product-stock.edit', $value->slug)}}">
-                                                <button class="button button--color-orange">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </button>
-                                            </a>
-                                        </td>
+                                     
                                     </tr>
                                 @endforeach
                             @endif

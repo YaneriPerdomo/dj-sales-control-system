@@ -25,7 +25,7 @@
     <x-selection-operations></x-selection-operations>
     <main class="flex__grow-2 flex-full__justify-content-center">
         <article class=" h-100 w-adjustable flex-full__aligh-start  ">
-            <div class="card  p-3">
+            <div class="card p-3">
                 <div>
                     <b class="card__title">
                         <i class="bi bi-exclamation-diamond"></i>

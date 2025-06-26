@@ -62,6 +62,16 @@ class MerchandiseController extends Controller
                     ]);
 
                     $productToUpdate = Product::where('product_id', $productId)->first();
+
+                    $saleCountStock = $productToUpdate->stock_available;
+                    if ($saleCountStock <= 0) {
+                        DB::rollBack();
+                        $nameProduct = $requestData[$productNameKey];
+                        return redirect()->back()->with(
+                            'alert-danger',
+                            'Error 409 (Conflicto): No podemos procesar la operacion. El producto con la siguiente descripción "' . $nameProduct . '" no tiene suficiente stock disponible. '
+                        );
+                    }
                     if ($productToUpdate) {
                         $productToUpdate->stock_available -= $productAmount;
                         $productToUpdate->save();
@@ -82,6 +92,7 @@ class MerchandiseController extends Controller
             ]);
 
             DB::commit();
+
 
             return redirect('mercancia/devolver')->with("alert-success", "Devolución de mercancía completada con éxito. El inventario ha sido ajustado correctamente.");
 

@@ -22,13 +22,11 @@ return new class extends Migration {
                 ->onDelete('set null');
             $table->integer('quantity');
             $table->decimal('unit_cost_dollars', 10, 2);
-            $table->decimal('unit_cost_bs', 10, 2);
             $table->decimal('subtotal_dollars', 10, 2);
-            $table->decimal('subtotal_bs', 10, 2);
             $table->integer('tax_rate');
             $table->decimal('tax_dollars', 10, 2);
             $table->decimal('tax_bs', 10, 2);
-            $table->integer('discount_only_dollars');
+            $table->integer('discount');
             $table->decimal('line_total_dollars', 10, 2);
             $table->decimal('line_total_bs', 10, 2);
             $table->timestamps();

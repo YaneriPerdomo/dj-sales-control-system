@@ -36,6 +36,12 @@
                     {{ session('alert-success') }}
                 </div>
             @endif
+            @if (session('alert-danger'))
+                <div class="alert alert-danger" role="alert">
+                    {{ session('alert-danger') }}
+                </div>
+            @endif
+
             <div class="form__item">
                 <label for="product" class="form__label form__label--required">Producto</label>
                 <div class="input-group ">
@@ -46,7 +52,8 @@
                         name="product_id" id="product" aria-label="Seleccione el producto">
                         <option selected readonly>Seleccione una opción</option>
                         @foreach ($products as $value)
-                            <option value="{{ $value->product_id }}" data-priceDollar="{{ $value->price_dollar }}">{{$value->name . ' ' . $value->code}}</option>
+                            <option value="{{ $value->product_id }}" data-priceDollar="{{ $value->price_dollar }}">
+                                {{$value->name . ' ' . $value->code}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -60,10 +67,8 @@
                 <div class="input-group">
                     <span class="form__icon input-group-text @error('note') is-invalid--border @enderror"
                         id="note-addon"><i class="bi bi-text-paragraph"></i></span>
-                    <textarea name="note" id="note" rows="3"
-                        class="form-control @error('note') is-invalid @enderror"
-                        placeholder="Breve descripción de la devolucion..." {{-- Changed
-                        placeholder text --}}
+                    <textarea name="note" id="note" rows="3" class="form-control @error('note') is-invalid @enderror"
+                        placeholder="Breve descripción de la devolucion..." {{-- Changed placeholder text --}}
                         aria-label="Descripción de la devolucion">{{ old('note') }}</textarea> {{-- Changed
                     aria-label text --}}
                 </div>
@@ -76,7 +81,7 @@
                         <tr>
                             <th>Nombre del producto</th>
                             <th>Cantidad</th>
-                           
+
                             <th>Operación</th>
                         </tr>
                     </thead>

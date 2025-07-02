@@ -1,7 +1,7 @@
 <header>
-    <section>
-        Logo
-    </section>
+    <a href="{{ route('controlPanel.index') }}" class="text-decoration-none text-white fs-4" >
+         StockYP
+    </a>
     <div>
         <div class="top-bar__avatar">
         </div>

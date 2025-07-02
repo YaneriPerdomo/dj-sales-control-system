@@ -1,11 +1,6 @@
 <div class="selection-operations">
     <nav class="container-xl flex-full__justify-content-between text-white">
         <div>
-            <a href="" class="text-decoration-none text-white">
-                Panel de control
-            </a>
-        </div>
-        <div>
             <div class="dropdown">
                 <button class="button text-white dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -99,8 +94,7 @@
                     Informes
                 </button>
                 <ul class="dropdown-menu dropdown-menu-dark">
-                    <li><a class="dropdown-item" href="">Informe de Ventas</a></li>
-                    <li><a class="dropdown-item" href="">Informe de Mercancias</a></li>
+                    <li><a class="dropdown-item" href="{{ route('sale-report.index') }}">Informe de Ventas</a></li>
                     <li><a class="dropdown-item" href="{{ route('stock-reporte.index') }}">Informe de Stock</a></li>
                 </ul>
             </div>

@@ -19,6 +19,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MerchandiseController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseHistoryController;
+use App\Http\Controllers\SaleReportController;
 use App\Http\Controllers\SalesManagementController;
 use App\Http\Controllers\StockReportController;
 use App\Http\Controllers\SupplierController;
@@ -32,7 +33,7 @@ Route::controller(LoginController::class)->group(function () {
     Route::post('cerrar-sesion', 'logout')->name('logout');
 });
 
-Route::get('panel-control', [ControlPanelController::class, 'index'])
+Route::get('bienvenido-a', [ControlPanelController::class, 'index'])
     ->middleware(['auth'])
     ->name('controlPanel.index');
 
@@ -153,17 +154,19 @@ Route::controller(MerchandiseController::class)->group(function () {
 
 Route::controller(SalesManagementController::class)->group(function () {
     Route::get('historial-de-ventas-general', 'index')->name('general-history-sale.index');
-    Route::get('registrar-venta', 'create')->name('register.create');
+    Route::get('registrar-venta', 'create')->name(name: 'register.create');
     Route::get('historial-ventas-general/{codeSale}/ver-detalles', 'saleSeeDetails')->name('sale.see-details');
     Route::post('venta-registrar', 'store')->name('register.store');
     Route::post('venta/buscar-cliente', 'searchCurtomer')->name('register.search-card');
     Route::post('venta/buscar-producto', 'searchProduct')->name('register.search-product');
     Route::post('venta/buscar-producto', 'searchProduct')->name('register.search-product');
+    Route::post('venta/{codeSale}/pdf', 'salePdf')->name('sale.pdf');
+
 });
 
 Route::controller(PurchaseHistoryController::class)->group(function () {
-    Route::get('historial-mercancias', 'index')->name('spurchase-history.index');
-    Route::get('historial-mercancia/m-{id}/{statu}/mas-detalles', 'show')->name('spurchase-history.show');
+    Route::get('historial-de-movimientos', 'index')->name('spurchase-history.index');
+    Route::get('historial-de-movimientos/m-{id}/{statu}/mas-detalles', 'show')->name('spurchase-history.show');
 });
 
 Route::controller(BusinessDataController::class)->group(function () {
@@ -191,11 +194,30 @@ Route::controller(CustomerReceiptHistoryController::class)->group(function () {
 Route::controller(WarrantyManagementController::class)->group(function () {
     Route::get('productos-con-garantias-valida', 'index')->name('customer-receipt-history.index');
     Route::get('seguimiento-de-ventas-y-garantias/paso-1', 'searchForSale')->name('warranty-sale.search-for-sale');
-    Route::post('seguimiento-de-ventas-y-garantias/paso-1', 'checkStatusSale')->name('warranty-sale.search-for-sale');
-    Route::post('seguimiento-de-ventas-y-garantias/paso-2', 'changeProductStatus')->name('warranty-sale.change-product-status');
-    
+    Route::get('ampliar-garantia-de-venta/{code_sale}', 'warrantyExtensionForm')->name('warranty-sale.warranty-extesion-form');
+    Route::post('ampliar-garantia-de-venta/{code_sale}', 'warrantyExtensionFormPost')->name('warranty-sale.warranty-extesion-form-post');
+    Route::post('seguimiento-de-ventas-y-garantias/paso-3', 'showSelectOption')->name('warranty-sale.show-select-option');
+    Route::post('seguimiento-de-ventas-y-garantias/paso-4', 'proceedWarranty')->name('warranty-sale.proceed-warranty');
+    Route::post('seguimiento-de-ventas-y-garantias/paso-4/productos-cambiados', 'changedProducts')->name('warranty-sale.changed-products');
+
+    // Cumplimiento de Garantía "En Reparación" 
+    Route::post('seguimiento-de-ventas-y-garantias/paso-4/en_reparacion', 'inRepair')->name('warranty-sale.in-repair');
+
+    //seguimiento-de-ventas-y-garantias/informe-servicio-tecnico/235
+    Route::get('seguimiento-de-ventas-y-garantias/informe-servicio-tecnico/{sale_id}', 'reportRepairPDF')->name('warranty-sale.in-repair-pdf');
+
+    Route::post('seguimiento-de-ventas-y-garantias/paso-2', 'showSaleWarrantyStatus')->name('warranty-sale.show-sale-warranty-status');
+    //Proceed to the warranty
+    //Route::post('seguimiento-de-ventas-y-garantias/paso-3', 'proceedWarranty')->name('warranty-sale.proceed-warranty');
+
 });
 
+
+Route::controller(SaleReportController::class)->group(function () {
+    Route::get('informe-ventas', 'index')->name('sale-report.index');
+    Route::post('informe-venta/day/pdf', 'reportPDF')->name('sale-report.dayReport');
+
+});
 
 
 

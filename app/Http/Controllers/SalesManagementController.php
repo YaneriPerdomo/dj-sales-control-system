@@ -294,6 +294,7 @@ class SalesManagementController extends Controller
                               'discount' => $productDiscount
                          ]);
 
+                         
                          $productToUpdate = Product::where('product_id', $productId)->first();
                          $saleCountStock = $productToUpdate->stock_available;
                          if ($saleCountStock <= 0) {
@@ -331,7 +332,9 @@ class SalesManagementController extends Controller
                }
 
                MerchandiseHistory::create([
-                    'message' => '<b>Salida: </b> Egreso  de ' . $numberOfItems . ' ' . $singular_or_plural_product . ', sumando ' . $sum . ' ' . $singular_or_plural . ' en total por ' . $msgClient,
+                                'return_merchandise_id' => $good->return_merchandise_id,
+
+                    'message' => '<b>Salida: </b> Egreso para venta de ' . $numberOfItems . ' ' . $singular_or_plural_product . ', sumando ' . $sum . ' ' . $singular_or_plural . ' en total por ' . $msgClient,
                ]);
 
                DB::commit();
@@ -340,33 +343,9 @@ class SalesManagementController extends Controller
                     return redirect('venta/registrar')->with("alert-success-sale", "¡Transacción de venta completada! Se ha registrado la transacción del cliente.");
                }
 
-
-               $sale_id = $register_sale->sale_id;
-
-               $sale_details = SaleDetails::select('quantity', 'product_id', 'subtotal_dollars', 'unit_cost_dollars', 'discount')
-                    ->with([
-                         'products' => function ($query) {
-                              $query->select('product_id', 'name');
-                         }
-                    ])->where('sale_id', $sale_id)->get();
-               $sale = Sale::with([
-                    "customer" => function ($query) {
-                         $query->select('customer_id', 'name', 'lastname', 'identity_card_id', 'card', 'phone', 'address')
-                         ;
-                    }
-               ])->where('sale_id', $sale_id)->first();
-
-               $business_data = BusinessData::first();
-
-               $pdf = Pdf::loadView(
-                    "admin.operations.sales-management.sale-receipt",
-                    ['business_data' => $business_data, 'sale' => $sale, 'sale_details' => $sale_details]
-               );
+               return $this->salePdf($register_sale->sale_id);
 
                //Session::flash("alert-success-sale", "Recibo y Detalles de la Venta Descargados del cliente. ¡Operación completada!");
-
-               return $pdf->download('Recibo-de-' . $sale['customer']['name'] . '-' . $sale['customer']['lastname'] . '-' . Date('d-m-Y') . '.pdf');
-
 
           } catch (QueryException $ex) {
 
@@ -393,5 +372,57 @@ class SalesManagementController extends Controller
                echo $ex->getMessage();
                // redirect()->back()->with('alert-danger', 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.');
           }
+     }
+
+     public function salePdf($sale_id_)
+     {
+
+
+          $sale = Sale::where('sale_id', $sale_id_)->first();
+
+          $sale_id = $sale->sale_id;
+
+          $fecha_actual = Date('Y-m-d');
+
+          $fecha_vencimiento = $sale->expiration_date;
+
+          if ($fecha_actual > $fecha_vencimiento) {
+               $sale->expiration_date = null;
+               $sale->save();
+          }
+          $sale_details = SaleDetails::select('quantity', 'product_id', 'subtotal_dollars', 'unit_cost_dollars', 'discount')
+               ->with([
+                    'products' => function ($query) {
+                         $query->select('product_id', 'name');
+                    }
+               ])->where('sale_id', $sale_id)->get();
+          $sale = Sale::with([
+               "customer" => function ($query) {
+                    $query->select('customer_id', 'name', 'lastname', 'identity_card_id', 'card', 'phone', 'address')
+                    ;
+               }
+          ])->where('sale_id', $sale_id)->first();
+
+          $business_data = BusinessData::with([
+               'identityCard' => function ($query) {
+                    return $query->select('letter', 'identity_card_id');
+               }
+          ])->first();
+
+        
+
+          $business_data = Array ($business_data);
+
+          
+          $pdf = Pdf::loadView(
+               "admin.operations.sales-management.sale-receipt",
+               ['business_data' => $business_data, 'sale' => $sale, 'sale_details' => $sale_details]
+          );
+
+          //Session::flash("alert-success-sale", "Recibo y Detalles de la Venta Descargados del cliente. ¡Operación completada!");
+
+          return $pdf->download('Recibo-de-' . $sale['customer']['name'] . '-' . $sale['customer']['lastname'] . '-' . Date('d-m-Y') . '.pdf');
+
+
      }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Editar Categorías | Sistema Web DJ</title>
+    <title>Editar Categorías | <x-systen-name></x-systen-name></title>
     <link rel="stylesheet" href="../../../css/utilities.css">
     <link rel="stylesheet" href="../../../css/layouts/_base.css">
     <link rel="stylesheet" href="../../../css/components/_button.css">
@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../../css/components/_input.css">
     <link rel="stylesheet" href="../../../css/components/_top-bar.css">
     <link rel="stylesheet" href="../../../css/components/_selection-operations.css">
+    <link rel="icon" type="image/x-icon" href="./../../img/icono.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
@@ -26,9 +27,10 @@
         <form action="{{ route('category.update', $category->slug) }}" method="post" class="form  w-adjustable-s">
             @csrf
             @method('PUT')
-             <div class="button--back">
+            <div class="button--back">
                 <a href="{{ route('category.index') }}">
-                    <i class="bi bi-arrow-left-square text-grey"></i> <button class="button text-grey" type="button">Volver al listado</button>
+                    <i class="bi bi-arrow-left-square text-grey"></i> <button class="button text-grey"
+                        type="button">Volver al listado</button>
                 </a>
             </div>
             <legend class="form__title">
@@ -54,7 +56,7 @@
             </div>
             <div class="form__button w-100 my-3">
                 <button class="button button--color-blue w-100" type="submit">
-                    Guardar cambios 
+                    Guardar cambios
                 </button>
             </div>
         </form>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Eliminar cuenta | Biblioteca B</title>
+    <title>Eliminar cuenta | <x-systen-name></x-systen-name></title>
     <link rel="stylesheet" href="../../../css/utilities.css">
     <link rel="stylesheet" href="../../../css/layouts/_base.css">
     <link rel="stylesheet" href="../../../css/components/_button.css">
@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../../../css/components/_input.css">
     <link rel="stylesheet" href="../../../css/components/_top-bar.css">
     <link rel="stylesheet" href="../../../css/components/_selection-operations.css">
+    <link rel="icon" type="image/x-icon" href="./../../img/icono.ico">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
@@ -45,12 +46,12 @@
                 </div>
                 <hr>
                 <div class="card__button-option flex-full__justify-content-between ">
-                    <a href="{{ route('location.index') }}" class="text-decoration-white card__link-cancel">
+                    <a href="{{ route('brand.index') }}" class="text-decoration-white card__link-cancel">
                         <button class="button button--color-grey" type="submit">
                             Cancelar
                         </button>
                     </a>
-                    <form action="{{ route('brand.destroy', $slug ) }}" method="POST">
+                    <form action="{{ route('brand.destroy', $slug) }}" method="POST">
                         @method('DELETE')
                         @csrf
                         <button class="card__button button button--color-red" type="submit">

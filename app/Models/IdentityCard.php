@@ -10,12 +10,14 @@ class IdentityCard extends Model
     protected $fillable = [
         "identity_card",
         "identity_card_id",
-        "description"
+        "description",
+        "letter",
     ];
 
     protected $primaryKey = "identity_card_id";
 
-    public function customers(){
+    public function customers()
+    {
         return $this->hasMany(Customer::class, "identity_card_id");
     }
 }

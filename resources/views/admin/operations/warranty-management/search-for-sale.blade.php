@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Buscar Recibos del Cliente | Sistema Web DJ</title>
+    <title>Buscar Venta por Código | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -55,33 +55,46 @@
     <x-header-admin></x-header-admin>
     <x-selection-operations></x-selection-operations>
     <main class="flex__grow-2 flex-full__aligh-start">
-        <form action="{{ route('warranty-sale.search-for-sale') }}" method="post" class="form w-adjustable-s">
+        <form action='{{ route('warranty-sale.show-sale-warranty-status') }}' method="post" class="form w-adjustable-s">
             @method('POST')
             @csrf
             <div class="multiple-steps">
                 <div class="flex-full__justify-content-between p-0 multiple-steps__context">
                     <small class="multiple-steps__text">
-                        Buscar Venta <br> por Código
+                        <b>                                     Buscar Venta <br> por Código
+                        </b>
                     </small>
                     <small class="multiple-steps__text">
-                        Mostrar detalles de la <br> venta
+                                        Ver Detalles <br> de la Venta
+
+                       
                     </small>
                     <small class="multiple-steps__text">
-                        Proceder<br> a la garantía
+                Seleccionar Condiciones <br> de Garantía
+                    </small>
+                    <small class="multiple-steps__text">
+                Procesar <br> Garantía 
                     </small>
                 </div>
                 <div class="multiple-steps__number">
                     <b>1</b>
-                    <div class="multiple-steps__wait multiple-steps__line"></div>
+                    <div class="multiple-steps__wait  multiple-steps__line"></div>
                     <b class="multiple-steps__wait">2</b>
-                    <div class="multiple-steps__wait multiple-steps__line"></div>
+                    <div class="multiple-steps__wait multiple-steps__line  "></div>
                     <b class="multiple-steps__wait">3</b>
+                    <div class="multiple-steps__wait multiple-steps__line  "></div>
+                    <b class="multiple-steps__wait">4</b>
                 </div>
             </div>
-
             @if (session('alert-success'))
                 <div class="alert alert-success">
-                    {{ session('alert-success') }}
+                    {!! session('alert-success')  !!}
+                </div>
+            @endif
+
+            @if (session('alert-danger'))
+                <div class="alert alert-danger">
+                    {{ session('alert-danger') }}
                 </div>
             @endif
             <div class="form__item">

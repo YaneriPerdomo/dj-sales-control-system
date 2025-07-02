@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> Mensaje importante | Sistema Web DJ</title>
+    <title>Selección de Condiciones
+de Garantía | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -18,15 +19,6 @@
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 </head>
 <style>
-    .article--all-job {
-        align-self: start;
-    }
-
-    .table__operations {
-        display: flex !important;
-        gap: 0.5rem;
-    }
-
     .multiple-steps__number {
         display: flex;
         gap: 0;
@@ -58,63 +50,87 @@
     .multiple-steps__text {
         text-align: center;
     }
-
-    .multiple-steps__line--interrupted {
-        background-image: linear-gradient(90deg, var(--color-blue) 0% 50%, var(--color-grey-two) 50% 100%) !important;
-    }
 </style>
 
 <body class="h-100 d-flex flex-column">
     <x-header-admin></x-header-admin>
     <x-selection-operations></x-selection-operations>
     <main class="flex__grow-2 flex-full__aligh-start">
-        <article class=" h-100 w-adjustable-s flex-full__aligh-start  ">
-            <div class="form p-3 msg">
-            
-  <div class="multiple-steps">
+        <form action='{{ route('warranty-sale.proceed-warranty') }}' method="post" class="form w-adjustable-s">
+            @method('POST')
+            @csrf
+           <div class="multiple-steps">
                     <div class="flex-full__justify-content-between p-0 multiple-steps__context">
                         <small class="multiple-steps__text">
-                                                  Buscar Venta <br> por Código
+                            Buscar Venta <br> por Código
                         </small>
                         <small class="multiple-steps__text">
-                           
-                           Ver Detalles <br> de la Venta
-                          
+                         
+                             Mostrar detalles de la <br> venta
+                         
                         </small>
                         <small class="multiple-steps__text">
-                               Seleccionar Condiciones <br> de Garantía
+                              <b> Selección de Condiciones <br> de Garantía  </b>
                         </small>
                         <small class="multiple-steps__text">
-                                Procesar <br> Garantía 
+                             Proceder<br> a la garantía
                         </small>
                     </div>
                     <div class="multiple-steps__number">
                         <b>1</b>
                         <div class="  multiple-steps__line"></div>
                         <b class="">2</b>
-                        <div class="multiple-steps__wait multiple-steps__line  "></div>
-                        <b class="multiple-steps__wait">3</b>
+                        <div class="  multiple-steps__line  "></div>
+                        <b class=" ">3</b>
                         <div class="multiple-steps__wait multiple-steps__line  "></div>
                         <b class="multiple-steps__wait">4</b>
                     </div>
                 </div>
-                
-                <div class="msg__header mt-1">
-                    <b class=" text-red fs-5">
-                        <i class="bi bi-exclamation-diamond"></i>
-                        Mensaje importante
-                    </b><br>
-                    <hr>
+
+            @if (session('alert-success'))
+                <div class="alert alert-success">
+                    {{ session('alert-success') }}
                 </div>
-                <div class="msg__body">
-                    <p>
-                        {!! $msg !!}
-                    </p>
+            @endif
+
+            @if (session('alert-danger'))
+                <div class="alert alert-danger">
+                    {{ session('alert-danger') }}
                 </div>
-                <hr>
-            </div>
-            <hr>
-        </article>
+            @endif
+            <fieldset class="form__fieldset">
+                 
+                <input type="hidden" value="{{ $code_sale }}" name="sale_code">
+                <div class="form__item">
+                    <label for="warranty_condition" class="form__label form__label--required">Condición de
+                        Garantía</label>
+                    <div class="input-group">
+                        <span
+                            class="form__icon input-group-text @error('warranty_condition') is-invalid--border @enderror"
+                            id="warranty-condition-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </span>
+                        <select class="form-select @error('warranty_condition') is-invalid @enderror"
+                            name="warranty_condition" id="warranty_condition"
+                            aria-describedby="warranty-condition-error">
+                            <option value="" selected disabled>Seleccione una opción</option>
+                            <option value="in_repair">En reparación</option>
+                            <option value="products_changed">Productos cambiados</option>
+                            <option value="products_repaired">Productos reparados</option>
+                        </select>
+                    </div>
+                    @error('warranty_condition')
+                        <div id="warranty-condition-error" class="alert alert-danger mt-1" role="alert">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form__button w-100 my-3">
+                    <button class="button button--color-blue w-100 button--search" type="submit">
+                        Siguiente
+                    </button>
+                </div>
+            </fieldset>
+        </form>
     </main>
 
 

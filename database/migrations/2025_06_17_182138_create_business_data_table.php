@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -14,8 +13,9 @@ return new class extends Migration
         Schema::create('business_data', function (Blueprint $table) {
             $table->id('business_data_id');
             $table->string('name', 20);
+            $table->string('rif', 15)->nullable()->unique();
             $table->string('phone', 12)->nullable();
-             $table->string('email', 90)->nullable();
+            $table->string('email', 90)->nullable();
             $table->string('address', 120);
             $table->timestamp('updated_at')->useCurrent();
         });

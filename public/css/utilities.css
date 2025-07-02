@@ -16,6 +16,9 @@
     flex-wrap: wrap;
 }
 
+.text-orange{
+    color:var(--color-orange);
+}
 .align-self-end {
     align-self: end;
 }

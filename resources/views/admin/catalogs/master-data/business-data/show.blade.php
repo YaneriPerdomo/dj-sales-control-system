@@ -40,7 +40,8 @@
 
             <fieldset>
                 <div class="form__item">
-                    <label for="business_name" class="form__label form__label--required">Nombre Comercial del Negocio</label>
+                    <label for="business_name" class="form__label form__label--required">Nombre Comercial del
+                        Negocio</label>
                     <div class="input-group">
                         <span class="form__icon input-group-text @error('business_name') is-invalid @enderror"
                             id="business-name-addon"><i class="bi bi-shop"></i></span>
@@ -51,7 +52,38 @@
                     </div>
                     @error('business_name') <div class="alert alert-danger mt-1">{{ $message }}</div> @enderror
                 </div>
-
+                <div class="form__item">
+                    <label for="business_rif" class="form__label form__label--required"> Tipo de identidad  </label>
+                    <div class="input-group">
+                        <span
+                            class="form__icon input-group-text @error('identity_card_id') is-invalid--border @enderror"
+                            id="category-addon"><i class="bi bi-person-badge"></i></span>
+                        <select class="form-select @error('identity_card_id') is-invalid @enderror"
+                            name="identity_card_id" id="identity_card_id"
+                            aria-label="Seleccione la categoría del producto">
+                            <option selected disabled>Seleccione una opción</option>
+                            @foreach ($rif as $value)
+                                <option value="{{ $value->identity_card_id }}"
+                                     {{ $business_data->identity_card_id == $value->identity_card_id ? 'selected' : '' }}>
+                                     
+                                    {{ $value->identity_card }} 
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('business_rif') <div class="alert alert-danger mt-1">{{ $message }}</div> @enderror
+                </div>
+                <div class="form__item">
+                    <label for="rif" class="form__label form__label--required">  Número de identificación </label>
+                    <div class="input-group">
+                        <span class="form__icon input-group-text @error('rif') is-invalid @enderror"
+                            id="business-rif-addon"><i class="bi bi-rif"></i></span>
+                        <input type="text" name="rif" id="rif"
+                            class="form-control @error('rif') is-invalid @enderror" placeholder="Ej: +58 412 1234567"
+                            aria-label="Teléfono del Negocio" value="{{ old('rif', $business_data->rif) }}">
+                    </div>
+                    @error('rif') <div class="alert alert-danger mt-1">{{ $message }}</div> @enderror
+                </div>
                 <div class="form__item">
                     <label for="phone" class="form__label form__label--required">Teléfono</label>
                     <div class="input-group">

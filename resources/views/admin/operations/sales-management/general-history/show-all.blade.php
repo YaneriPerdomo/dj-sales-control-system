@@ -40,72 +40,58 @@
     <main class="flex__grow-2 flex-full__aligh-start">
         <article class="form w-adjustable  ">
             <div class="flex-full__justify-content-between p-0">
-                <div>
-                    <legend class="mb-2"><b>Historial de Ventas General</b></legend>
-                    <div class="search">
-                        <div>
-                            <label for="">Fecha Inicial</label>
-                            <div class="input-group  search__seeker">
-                                <span class="search__icon-wrapper input-group-text" id="product-name-addon">
-                                    <i class="bi bi-calendar search__icon"></i>
-                                </span>
-                                <input type="date" name="product_name" id="product_name"
-                                    class="search__input search__input--date form-control" placeholder=""
-                                    aria-label="Nombre del producto" autofocus value="">
-                            </div>
-                        </div>
-                        <div>
-                            <label for="">Fecha Final</label>
-                            <div class="input-group  search__seeker">
-                                <span class="search__icon-wrapper input-group-text" id="product-name-addon">
-                                    <i class="bi bi-calendar search__icon"></i>
-                                </span>
-                                <input type="date" name="product_name" id="product_name"
-                                    class="search__input search__input--date form-control" placeholder=""
-                                    aria-label="Nombre del producto" autofocus value="">
-                            </div>
-                        </div>
-                        <div>
-                            <label for="">Cliente</label>
-                            <div class="input-group  search__seeker">
-                                <span class="search__icon-wrapper input-group-text" id="product-name-addon">
-                                    <i class="bi bi-person-badge"></i>
-
-                                </span>
-                                <input type="number" name="product_name" id="product_name"
-                                    class="search__input search__input--text form-control" placeholder=""
-                                    aria-label="Nombre del producto" autofocus value="">
-                            </div>
-                        </div>
-                        
-                        <div class="search__action search__action--content-items ">
-                            <button class="button search__button button--color-blue button--search" type="button">
-                                <i class="bi bi-search search__icon"></i>
-                                Buscar Venta
-                            </button>
+                <legend class="mb-2"><b>Historial de Ventas General</b></legend>
+                <div class="search">
+                    <div>
+                        <label for="">Fecha Inicial</label>
+                        <div class="input-group  search__seeker">
+                            <span class="search__icon-wrapper input-group-text" id="product-name-addon">
+                                <i class="bi bi-calendar search__icon"></i>
+                            </span>
+                            <input type="date" name="product_name" id="product_name"
+                                class="search__input search__input--date form-control" placeholder=""
+                                aria-label="Nombre del producto" autofocus value="">
                         </div>
                     </div>
-                    <script>
-                        let ItemButttonSearh = document.querySelector('.button--search');
-                        let ItemFomSearch = document.querySelector('form');
-                        let ItemInputNameProduct = document.querySelector('#product_name');
-                        function slugify(text) {
-                            const lowercase = text.toLowerCase();
-                            const slug = lowercase.replace(/[^a-z0-9]+/g, '-');
-                            const trimmedSlug = slug.replace(/^-+|-+$/g, '');
-                            return trimmedSlug;
-                        }
-                        ItemButttonSearh.addEventListener('click', async e => {
-                            e.preventDefault();
-                            let inputValue = slugify(ItemInputNameProduct.value);
-                            if (inputValue != "") {
-                                return window.location.href = '../../productos/' + inputValue.trim() + '/buscar';
-                            } else {
-                                return window.location.href = '../../productos';
-                            }
-                        })
-                    </script>
+                    <div>
+                        <label for="">Fecha Final</label>
+                        <div class="input-group  search__seeker">
+                            <span class="search__icon-wrapper input-group-text" id="product-name-addon">
+                                <i class="bi bi-calendar search__icon"></i>
+                            </span>
+                            <input type="date" name="product_name" id="product_name"
+                                class="search__input search__input--date form-control" placeholder=""
+                                aria-label="Nombre del producto" autofocus value="">
+                        </div>
+                    </div>
+
+                    <div class="search__action " style="  align-self: end;">
+                        <button class="button search__button button--color-blue button--search" type="button">
+                            <i class="bi bi-search search__icon"></i>
+                            Buscar Venta
+                        </button>
+                    </div>
                 </div>
+                <script>
+                    let ItemButttonSearh = document.querySelector('.button--search');
+                    let ItemFomSearch = document.querySelector('form');
+                    let ItemInputNameProduct = document.querySelector('#product_name');
+                    function slugify(text) {
+                        const lowercase = text.toLowerCase();
+                        const slug = lowercase.replace(/[^a-z0-9]+/g, '-');
+                        const trimmedSlug = slug.replace(/^-+|-+$/g, '');
+                        return trimmedSlug;
+                    }
+                    ItemButttonSearh.addEventListener('click', async e => {
+                        e.preventDefault();
+                        let inputValue = slugify(ItemInputNameProduct.value);
+                        if (inputValue != "") {
+                            return window.location.href = '../../productos/' + inputValue.trim() + '/buscar';
+                        } else {
+                            return window.location.href = '../../productos';
+                        }
+                    })
+                </script>
             </div>
             <div class="">
                 @if (session('alert-success'))
@@ -152,10 +138,19 @@
                                         <td>{{$value->sale->status}}</td>
                                         <td class='table__operations'>
                                             <a href="{{ route('sale.see-details', $value->sale->slug ?? 0) }}">
-                                                <button class="button button--color-black">
+                                                <button class="button button--color-orange">
                                                     <i class="bi bi-journals"></i>
                                                 </button>
                                             </a>
+
+                                            <form action="{{ route('sale.pdf', $value->sale->sale_id ?? 0) }}" method="post">
+                                                @csrf
+                                                @method('POST')
+                                                <button class="button button--color-orange">
+                                                    <i class="bi bi-filetype-pdf"></i>
+                                                </button>
+                                            </form>
+
                                         </td>
                                     </tr>
                                 @endforeach

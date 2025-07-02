@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Registrar Nueva Venta | Sistema Web DJ</title>
+    <title>Ver Detalles
+de la Venta  | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../css/utilities.css">
     <link rel="stylesheet" href="../../../css/layouts/_base.css">
     <link rel="stylesheet" href="../../../css/components/_button.css">
@@ -103,6 +104,29 @@
     .multiple-steps__line--interrupted {
         background-image: linear-gradient(90deg, var(--color-blue) 0% 50%, var(--color-grey-two) 50% 100%) !important;
     }
+
+
+
+    .warranty-history{
+        display:flex;
+          flex-direction: column;
+        justify-content:center;
+          align-items: center;
+    }
+
+    .warranty-history__header{
+              text-align: right;
+    }
+ 
+     
+    .warranty-history__content{
+        padding: 0.7rem;
+   margin: 1rem;
+ 
+  border: solid 3px var(--color-blue);
+  border-radius: 0.5rem;
+    }
+
     </style>
 </head>
 
@@ -121,34 +145,37 @@
                     {{ session('alert-danger') }}
                 </div>
             @endif
-              <div class="button--back mb-2">
-                    <a href="{{ route('customer.index') }}">
-                        <i class="bi bi-arrow-left-square text-grey"></i>
-                        <button class="button text-grey" type="button">Volver al paso uno</button>
-                    </a>
-                </div>
                <div class="multiple-steps">
                     <div class="flex-full__justify-content-between p-0 multiple-steps__context">
                         <small class="multiple-steps__text">
-                            <b>Buscar Venta <br> por Código</b>
+                                                  Buscar Venta <br> por Código
                         </small>
                         <small class="multiple-steps__text">
-                           <b> Mostrar detalles de la <br> venta</b>
+                          <b>
+                           Ver Detalles <br> de la Venta
+                          </b>
                         </small>
                         <small class="multiple-steps__text">
-                            <b>  Proceder<br> a la garantía</b>
+                               Seleccionar Condiciones <br> de Garantía
+                        </small>
+                        <small class="multiple-steps__text">
+                                Procesar <br> Garantía 
                         </small>
                     </div>
                     <div class="multiple-steps__number">
                         <b>1</b>
                         <div class="  multiple-steps__line"></div>
                         <b class="">2</b>
-                        <div class="multiple-steps__wait multiple-steps__line multiple-steps__line--interrupted"></div>
+                        <div class="multiple-steps__wait multiple-steps__line  "></div>
                         <b class="multiple-steps__wait">3</b>
+                        <div class="multiple-steps__wait multiple-steps__line  "></div>
+                        <b class="multiple-steps__wait">4</b>
                     </div>
                 </div>
                 
-            <form id="register_sale">
+                
+            
+
                 <section>
                     <h2 class="fs-4">Comprobante de Pago</h2>
                     <div class="row">
@@ -204,17 +231,17 @@
                                 id="observations-addon">
                                 <i class="bi bi-chat-dots"></i>
                             </span>
-                            <textarea name="observations" id="observations" rows="3"
+                            <textarea name="observations" id="observations" rows="3" disabled
                                 class="form-control @error('observations') is-invalid @enderror"
                                 placeholder="Breve descripción del comprobante..."
                                 aria-label="Observaciones">{{ $sale->remarks ?? ''}}</textarea>
                         </div>
                     </div>
                 </section>
-            </form>
+           <div>
 
             <h2 class="fs-4">Información del cliente</h2>
-            <form action="{{ route('register.search-card') }}" class="search-card flex-full__aligh-start" method="POST"
+            <div action="{{ route('register.search-card') }}" class="search-card flex-full__aligh-start" method="POST"
                 style="justify-content: start;">
                 <div class="form__item w-50 m-0">
                     <label for="supplier_id_search" class="form__label form__label--required">Número de
@@ -225,9 +252,9 @@
                             placeholder="Ej: 31048726" aria-label="Número de identificación" value="{{ $sale->customer->card }}" disabled>
                     </div>
                 </div>
-            </form>
+            </div>
 
-            <form id="register_sale">
+            <div id="register_sale">
                 @csrf
                 @method('POST')
 
@@ -308,7 +335,7 @@
                         @error('client_address') <div class="alert alert-danger mt-1">{{ $message }}</div> @enderror
                     </div>
                 </fieldset>
-            </form>
+            </div>
 
             <section class="product">
                 <h2 class="fs-4">Listado de Productos</h2>
@@ -319,7 +346,7 @@
                     </span>
                 </div>
  
-                <form action="{{ route('warranty-sale.change-product-status') }}" method="post" class="form__sale-register">
+                <div action="" method="post" class="form__sale-register">
                     @csrf
                     @method('POST')
                     <section class='table' data-count='0'>
@@ -332,9 +359,6 @@
                                         <th>Precio Unitario <br> Divisas</th>
                                         <th>Descuento</th>
                                         <th>Total Neto <br>Divisas</th>
-                                        <th>
-                                            Estado de la Garantía
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-insert">
@@ -352,6 +376,7 @@
                                                 type="hidden" 
                                                 id="id" 
                                                 name="id_{{ $count }}" 
+                                                disabled
                                                 value="{{ $value->sale_detail_id }}"
                                             >
                                             <input 
@@ -372,12 +397,12 @@
                                         </span>
                                         <input 
                                             type="number" 
-                                          
+                                            disabled
                                             class="form-control" 
                                             placeholder="Ej: 1"
                                             value="{{ $value->quantity }}"
                                             aria-label="quantify"
-                                            aria-describedby="basic-addon1" disabled>
+                                            aria-describedby="basic-addon1"  >
                                         </div>
                                     </td> 
                                     <td>
@@ -387,7 +412,7 @@
                                         </span>
                                         <input 
                                             type="text" 
-                                            
+                                            disabled
                                             class="form-control" 
                                             placeholder="Ej: 1"
                                             value="@php echo number_format($value->unit_cost_dollars, 2, ',','.') @endphp"
@@ -402,7 +427,7 @@
                                         </span>
                                         <input 
                                             type="text" 
-                                             
+                                            disabled
                                             class="form-control" 
                                             placeholder="Ej: 1"
                                             value="{{ $value->discount ?? 0}}%"
@@ -427,14 +452,14 @@
                                             aria-describedby="basic-addon1">
                                         </div>
                                     </td>  
-                                    <td>
+                                    <!-- <td>
                                          <div class="input-group">
                                 <span
                                     class="form__icon input-group-text @error ('product_id') is-invalid--border @enderror"
                                     id="basic-addon1">
                                     <i class="bi bi-patch-check"></i>
                                 </span>
-                            <select class="form-select" name="warranty_status_{{ $count }}" id="warranty_status_1" aria-label="Seleccione el estado final de la garantía">
+                                 <select class="form-select" name="warranty_status_{{ $count }}" id="warranty_status_1" aria-label="Seleccione el estado final de la garantía">
                                             <option value="" selected="" disabled="">Seleccione un estado</option>
                                             <option value="Reparado">
                                                 Reparado
@@ -448,9 +473,9 @@
                                             <option value="Rechazado">
                                                 Rechazado
                                             </option>
-                                        </select>
+                                        </select> 
                             </div>
-                                    </td>
+                                    </td>--->
                                 </tr>
                                     @endforeach
                                   
@@ -484,12 +509,20 @@
                             </div>
                         </div>
                     </section>
+                 
                     <div class="form__button w-100 my-3">
-                        <button class="button button--color-blue w-100" type="submit">
-                                               Guardar Estados de Garantía
-                        </button>
+                        <form action="{{ route('warranty-sale.show-select-option') }}" method="POST">
+                              @csrf
+                            @method('POST')
+                            <input type="hidden" value="{{ $sale->sale_code }}" name="sale_code">
+                            <button class="button button--color-blue w-100" type="submit">
+                                               Siguiente  
+                        </button> 
+                        </form>
+                              
+                         
                     </div>
-                </form>
+                </div>
             </section>
         </article>
 

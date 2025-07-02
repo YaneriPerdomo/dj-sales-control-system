@@ -174,117 +174,39 @@
                                 {{ $sale['sale_code'] }}</span> <br>
                         @endif
                         <span>Fecha de generación: {{ Date('d-m-Y') }}</span><br>
-                        @if ($sale['expiration_date'])
-                            <span>Fecha de vencimiento:
-                                @php
-                                    $date = explode('-', $sale['expiration_date']);
+                       
 
-                                    echo $date[2] . '-' . $date[1] . '-' . $date[0];
-                                @endphp
-                            </span><br>
-                        @endif
-                        @if ($sale['remarks'])
-                            <span>Observaciones: {{ $sale['remarks'] }}</span><br>
-                        @endif
                     </td>
                 </tr>
             </tbody>
         </table>
     </section>
 
-    {{-- Product Details Table --}}
+    <h2 style="padding: 0; margin: 0; color: #000080;"><b>
+            Detalles del Proceso de Reparación:
+        </b></h2>
     <section style="margin-bottom: 20px;">
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
                     <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">
-                        Descripción del producto</th>
-                    <th style="padding: 8px; text-align: center; border: 1px solid #ddd;">
-                        Cantidad</th>
-                    <th style="padding: 8px; text-align: right; border: 1px solid #ddd;">
-                        Precio Unitario<br>Divisas</th>
-                    <th style="padding: 8px; text-align: center; border: 1px solid #ddd; ">
-                        Descuento</th>
-                    <th style="padding: 8px; text-align: right; border: 1px solid #ddd;">
-                        Total Neto<br>Divisas</th>
+                        Descripción de la falla/problema</th>
+                    <th style="padding: 8px; text-align: left; border: 1px solid #ddd;">
+                        Técnico Responsable</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($sale_details as $detail)
-                    <tr>
-                        <td style="padding: 8px; text-align: left; border: 1px solid #ddd;">
-                            {{ $detail['products']['name'] ?? '' }}
-                        </td>
-                        <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">
-                            {{ $detail['quantity'] ?? '' }}
-                        </td>
-                        <td style="padding: 8px; text-align: right; border: 1px solid #ddd;">
-                            {{ number_format($detail['unit_cost_dollars'], 2, ',', '.') ?? '' }}
-                        </td>
-                        <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">
-                            {{ $detail['discount'] ?? 0 }}%
-                        </td>
-                        <td style="padding: 8px; text-align: right; border: 1px solid #ddd;">
-                            {{ number_format($detail['subtotal_dollars'], 2, ',', '.') ?? '' }}
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        {{-- Corrected colspan from 3 to 5 for all columns --}}
-                        <td colspan="5" style="padding: 8px; text-align: center; border: 1px solid #ddd;">
-                            No se encontraron detalles de productos para esta compra.
-                        </td>
-                    </tr>
-                @endforelse
+                <tr>
+                    <td style="padding: 8px; text-align: left; border: 1px solid #ddd;">
+                        {{ $sale_repair->comments }}
+                    </td>
+                    <td style="padding: 8px; text-align: left; border: 1px solid #ddd;">
+                        {{ $sale_repair->technical_manager }}
+                    </td>
+
+                </tr>
             </tbody>
         </table>
     </section>
 
-    {{-- Summary Section --}}
-    <section style="text-align: right; margin-top: 30px;">
-        <div style="margin-bottom: 5px;">
-            <span style="font-weight: bold; margin-right: 10px;">BASE IMPONIBLE:</span>
-            <span>{{ number_format($sale['tax_base'], 2, ',', '.') }}$</span>
-        </div>
-        <div style="margin-bottom: 5px;">
-            <span style="font-weight: bold; margin-right: 10px;">IVA ({{ $sale['VAT'] ?? '' }}%):</span>
-            <span>{{ number_format($sale['VAT_tax_dollars'], 2, ',', '.') }}$</span> {{-- Assuming VAT applies to
-            tax_base --}}
-        </div>
-
-        @if ($sale['credit_tax_dollars'] != '0.00')
-            <div style="margin-bottom: 5px;">
-                <span style="font-weight: bold; margin-right: 10px;">TASA DE INTERÉS DE CRÉDITO
-                    ({{ $sale['credit_rate'] ?? '' }}%):</span>
-                <span>{{ number_format($sale['credit_tax_dollars'], 2, ',', '.') }}$</span>
-            </div>
-        @endif
-        <div style="margin-top: 15px; font-size: 12pt;">
-            <span style="font-weight: bold; margin-right: 10px; color: #000080;">TOTAL A PAGAR:</span>
-            <span
-                style="font-weight: bold; color: #000080;">{{ number_format($sale['total_price_dollars'], 2, ',', '.') }}$</span>
-        </div>
-    </section>
-    <br><br>
-    <section style="text-align: center; margin-top: 50px;">
-        @if ($sale['expiration_date'])
-            <span style="style=" display: block; width: 250px; margin: 0 auto; border-top: 1px solid #000; padding-bottom:
-                5px; text-align: center;"">
-                <b style="font-weight: bold;"><i>¡GRACIAS POR ELEGIRNOS!</i></b> <br>
-
-                <small>
-                    Queremos informarte que, si bien no es posible realizar reembolsos, <br>
-                    estaremos encantados de ofrecerte un
-                    cambio o una reparación para <br>tu producto, en caso de ser necesario.
-                    <br>Nuestro equipo está listo para ayudarte.
-                </small>
-            </span>
-            <br><br><br><br>
-        @endif
-        <span
-            style="display: block; width: 250px; margin: 0 auto; border-top: 1px solid #000; padding-bottom: 5px; text-align: center;">
-            Firma del cliente
-        </span>
-
-    </section>
 </div>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> Mensaje importante | Sistema Web DJ</title>
+    <title> Ampliar el Periodo de Garantía | Sistema Web DJ</title>
     <link rel="stylesheet" href="../../../../../css/utilities.css">
     <link rel="stylesheet" href="../css/layouts/_base.css">
     <link rel="stylesheet" href="../css/components/_button.css">
@@ -68,10 +68,11 @@
     <x-header-admin></x-header-admin>
     <x-selection-operations></x-selection-operations>
     <main class="flex__grow-2 flex-full__aligh-start">
-        <article class=" h-100 w-adjustable-s flex-full__aligh-start  ">
-            <div class="form p-3 msg">
-            
-  <div class="multiple-steps">
+        <form action='{{ route('warranty-sale.warranty-extesion-form-post', $code_sale) }}' method="post"
+            class="form w-adjustable-s">
+            @method('POST')
+            @csrf
+            <div class="multiple-steps">
                     <div class="flex-full__justify-content-between p-0 multiple-steps__context">
                         <small class="multiple-steps__text">
                                                   Buscar Venta <br> por Código
@@ -99,22 +100,41 @@
                     </div>
                 </div>
                 
-                <div class="msg__header mt-1">
-                    <b class=" text-red fs-5">
-                        <i class="bi bi-exclamation-diamond"></i>
-                        Mensaje importante
-                    </b><br>
-                    <hr>
+
+            @if (session('alert-success'))
+                <div class="alert alert-success">
+                    {{ session('alert-success') }}
                 </div>
-                <div class="msg__body">
-                    <p>
-                        {!! $msg !!}
-                    </p>
+            @endif
+            <legend class="form__title">
+              <b>
+                  Ampliar el Periodo de Garantía
+              </b>
+            </legend>
+            <div class="form__item">
+                <label for="expiration_date" class="form__label form__label--required">Fecha de garantía</label>
+                <div class="input-group">
+                    <span class="form__icon input-group-text @error('expiration_date') is-invalid--border @enderror"
+                        id="sale-code-icon">
+                        <i class="bi bi-tag-fill"></i> </span>
+                    <input type="date" name="expiration_date" id="sale_code"
+                        class="form-control @error('expiration_date') is-invalid @enderror" placeholder="Ej: KfdVNC4F"
+                        aria-label="Código único de la venta para buscar garantía" aria-describedby="sale-code-icon"
+                        autofocus value="{{ $sale->expiration_date }}">
                 </div>
-                <hr>
+                @error('expiration_date')
+                    <div class="alert alert-danger mt-1" role="alert">{{ $message }}</div>
+                @enderror
             </div>
-            <hr>
-        </article>
+
+            <div class="form__button w-100 my-3">
+                <button class="button button--color-blue w-100 button--search" type="submit">
+                    Guardar Cambios
+                </button>
+            </div>
+
+        </form>
+
     </main>
 
 

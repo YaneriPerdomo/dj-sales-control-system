@@ -9,7 +9,7 @@ class ReturnMerchandise extends Model
 
     protected $fillable = [
         "return_merchandise_id",
-        "note",
+        "description",
         'created_at'
     ];
     protected $table = 'return_merchandise';

@@ -85,26 +85,42 @@
 
                     function generate_cost_sale($cost_price, $profit_margin, $discount = 0, $bs = 0)
                     {
-                        $porcentaje_ganancia_decimal = $profit_margin / 100;
-                        $monto_ganancia_dolares = $cost_price * $porcentaje_ganancia_decimal;
-                        $precio_venta_inicial = $cost_price + $monto_ganancia_dolares;
+                        // 1. Calcular el monto de ganancia en USD
+                        $profit_amount_usd = $cost_price * ($profit_margin / 100);
 
-                        if ($discount) {
-                            $porcentaje_descuento_decimal = $discount / 100;
-                            $monto_descuento_dolares = $precio_venta_inicial * $porcentaje_descuento_decimal;
-                            $precio_final_dolares_calculado = $precio_venta_inicial - $monto_descuento_dolares;
-                            $precio_final_dolares_formateado = number_format($precio_final_dolares_calculado, 2, ',', '.');
-                            $precio_final_bolivares_calculado = $precio_final_dolares_calculado * $bs;
-                            $precio_final_bolivares_formateado = number_format($precio_final_bolivares_calculado, 2, ',', '.');
-                            return 'USD:' . $precio_final_dolares_formateado .
-                                '<br> BS:' . $precio_final_bolivares_formateado;
-                        } else {
-                            $precio_venta_dolares_formateado = number_format($precio_venta_inicial, 2, ',', '.');
-                            $precio_venta_bolivares_calculado = $precio_venta_inicial * $bs;
-                            $precio_venta_bolivares_formateado = number_format($precio_venta_bolivares_calculado, 2, ',', '.');
-                            return 'USD:' . $precio_venta_dolares_formateado .
-                                '<br> BS:' . $precio_venta_bolivares_formateado;
+                        // 2. Calcular el precio de venta inicial (costo + ganancia)
+                        $initial_selling_price_usd = $cost_price + $profit_amount_usd;
+
+                        // Inicializamos el precio final de venta con el precio inicial
+                        $final_selling_price_usd = $initial_selling_price_usd;
+
+                        // 3. Aplicar descuento si existe y es mayor a 0
+                        if ($discount > 0) {
+                            // Calcular el monto del descuento sobre el precio de venta inicial
+                            $discount_amount_usd = $initial_selling_price_usd * ($discount / 100);
+
+                            // Restar el descuento para obtener el precio final en USD
+                            $final_selling_price_usd = $initial_selling_price_usd - $discount_amount_usd;
                         }
+
+                        // 4. Formatear el precio final en USD
+                        // Usamos str_replace para reemplazar la coma por punto si la configuración local lo requiere,
+                        // o simplemente number_format si el resultado ya es con punto decimal para consistencia.
+                        $final_selling_price_usd_formatted = number_format($final_selling_price_usd, 2, ',', '.');
+
+
+                        // 5. Calcular el precio final en Bolívares (BS) si la tasa de cambio es válida
+                        $final_selling_price_bs_calculated = 0;
+                        if ($bs > 0) { // Asegurarse de que $bs sea un valor válido para evitar divisiones por cero o cálculos erróneos
+                            $final_selling_price_bs_calculated = $final_selling_price_usd * $bs;
+                        }
+
+                        // 6. Formatear el precio final en Bolívares
+                        $final_selling_price_bs_formatted = number_format($final_selling_price_bs_calculated, 2, ',', '.');
+
+                        // 7. Retornar los precios formateados
+                        return 'USD: ' . $final_selling_price_usd_formatted .
+                            '<br> BS: ' . $final_selling_price_bs_formatted;
                     }
 
                 @endphp
@@ -184,15 +200,15 @@
                                             <a href="{{ route('product.delete', $value->slug)}}">
                                                 <button type="button" class="button button--color-red ">
                                                     <i class='bi bi-trash''></i>
-                                                                                </button>
-                                                                            </a>
-                                                                            <a href="{{ route('product.edit', $value->slug)}}">
-                                                                                <button class="button button--color-orange">
-                                                                                    <i class="bi bi-pencil-square"></i>
-                                                                                </button>
-                                                                            </a>
-                                                                        </td>
-                                                                    </tr>
+                                                                                                </button>
+                                                                                            </a>
+                                                                                            <a href="{{ route('product.edit', $value->slug)}}">
+                                                                                                <button class="button button--color-orange">
+                                                                                                    <i class="bi bi-pencil-square"></i>
+                                                                                                </button>
+                                                                                            </a>
+                                                                                        </td>
+                                                                                    </tr>
                                 @endforeach
                             @endif
                         </tbody>

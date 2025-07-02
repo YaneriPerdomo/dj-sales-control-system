@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BusinessData extends Model
 {
-    protected $table = "business_data";
+   protected $table = "business_data";
    protected $primaryKey = "business_data_id";
 
    protected $fillable = [
@@ -14,8 +14,15 @@ class BusinessData extends Model
       "phone",
       "email",
       "updated_at",
-      "address"
+      "address",
+      "rif",
+      "identity_card_id"
    ];
+
+   public function identityCard()
+   {
+      return $this->belongsTo(IdentityCard::class, "identity_card_id");
+   }
 
    public $timestamps = true;
 }
